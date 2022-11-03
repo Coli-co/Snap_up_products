@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const PORT = process.env.port
 const exphbs = require('express-handlebars')
 const path = require('path')
+require('dotenv').config()
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -17,6 +18,6 @@ app.get('/products', (req, res) => {
   res.render('products')
 })
 
-app.listen(port, () => {
-  console.log(`App is listening on port ${port}.`)
+app.listen(PORT, () => {
+  console.log(`App is listening on port ${PORT}.`)
 })
