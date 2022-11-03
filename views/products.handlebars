@@ -7,7 +7,7 @@
         {{#each data}}
         <div class="col-lg-4 col-md-6">
           <div class="icon-box mb-3">
-            <h4 class="title text-center mt-5 mb-3"><a href=""><b>{{ this.productname }}</b></a></h4>
+            <h4 class="title text-center mt-5 mb-3"><a href="/products/{{this.id}}"><b>{{ this.productname }}</b></a></h4>
             <p class="description">
               {{this.description}}
                
@@ -29,7 +29,7 @@
             </h2>
           </span>
           <div class="last">倒數：<span id="gdsStock_1">{{ this.quantity }}</span><small> 組</small></div>
-          <a class="btn btn-outline-info mt-2" href="#" role="button">立即搶</a>
+          <a class="btn btn-outline-info mt-2" href="/products/{{this.id}}" role="button">立即搶</a>
         </div>
         {{/each}}
       </div>

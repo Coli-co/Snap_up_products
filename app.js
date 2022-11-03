@@ -20,9 +20,7 @@ app.get('/', (req, res) => {
 
 app.get('/products', db.getProducts)
 
-app.get('/products/:id', (req, res) => {
-  res.render('detail')
-})
+app.get('/products/:id', db.getProductById)
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}.`)
