@@ -3,6 +3,7 @@ const app = express()
 const PORT = process.env.port
 const exphbs = require('express-handlebars')
 const path = require('path')
+const pool = require('./config/pg')
 require('dotenv').config()
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
