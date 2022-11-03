@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
-const PORT = process.env.port
+require('dotenv').config()
+const PORT = process.env.PORT
 const exphbs = require('express-handlebars')
 const path = require('path')
 const pool = require('./config/pg')
-require('dotenv').config()
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
 
 app.get('/products', (req, res) => {
   res.render('products')
+})
+
+app.get('/products/:id', (req, res) => {
+  res.render('detail')
 })
 
 app.listen(PORT, () => {
