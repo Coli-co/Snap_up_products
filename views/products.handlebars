@@ -1,83 +1,37 @@
 <main id="main">
+
   <!-- ======= Featured Services Section ======= -->
   <section id="products" class="products">
     <div class="container">
       <div class="row">
+        {{#each data}}
         <div class="col-lg-4 col-md-6">
           <div class="icon-box mb-3">
-            <h4 class="title text-center mt-5 mb-3"><a href=""><b>全自動咖啡機</b></a></h4>
+            <h4 class="title text-center mt-5 mb-3"><a href=""><b>{{ this.productname }}</b></a></h4>
             <p class="description">
-              脈衝式萃取技術，智慧型過濾系統，牛奶/奶泡以電子進氣閥自動切換、專業發泡器、牛奶系統自動沖洗多段式磨豆機。
-            <ul>
-              <li> 一體成型熱方塊加熱系統2組 </li>
-              <li>一鍵式製作拿鐵 單/雙杯</li>
-              <li>一鍵式製作卡布奇諾 單/雙杯</li>
-            </ul>
-
+              {{this.description}}
+               
+                <ul>
+                  <li>{{this.featureone}}</li>
+                  <li>{{this.featuretwo}}</li>
+                  <li>{{this.featurethree}}</li>
+                </ul>
+                
             </p>
-            <img src="/static/img/coffee-machine.jpg" width="400" height="400" alt="coffee-machine" />
+
+            <img src="{{ this.img }}" width="400" height="400" alt="coffee-machine" />
           </div>
           <span class="text-right">
             <sub class="js_price txt_origin" style="display: inline"><b>TWD $<span
-                  class="line_through js_price_span">10,000</span></b></sub>
+                  class="line_through js_price_span">{{ this.originprice }}</span></b></sub>
             <h2 class="js_onsale_price txt_sale">
-              <b><span class="currency_sign">TWD $</span><span class="js_onsale_price_span">6,000</span></b>
+              <b><span class="currency_sign">TWD $</span><span class="js_onsale_price_span">{{ this.sellprice }}</span></b>
             </h2>
           </span>
-          <div class="last">倒數：<span id="gdsStock_1">30</span><small> 組</small></div>
+          <div class="last">倒數：<span id="gdsStock_1">{{ this.quantity }}</span><small> 組</small></div>
           <a class="btn btn-outline-info mt-2" href="#" role="button">立即搶</a>
         </div>
-        <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-          <div class="icon-box mb-3">
-            <h4 class="title text-center mt-5 mb-3"><a href=""><b>黃金脆皮雞腿排</b></a></h4>
-            <p class="description">
-              黃金脆皮雞腿排50片組，嚴選去骨雞腿，獨家配方精心調配，金黃酥脆的外皮搭上鮮嫩多汁的雞腿肉，讓人垂涎三尺，超大份量的雞腿排，CP值大破表，讓您大呼過癮。
-            <ul>
-              <li>無添加防腐劑 </li>
-              <li>採用上等穀物飼養的美國雞肉</li>
-              <li>重磅保證，檢驗合格</li>
-            </ul>
-            </p>
-            <img style="border:5px groove gold" src="/static/img/chicken-steak.webp" width="400" height="400"
-              alt="chicken steak">
-          </div>
-          <span class="text-right ">
-            <sub class="js_price txt_origin" style="display: inline"><b>TWD $<span
-                  class="line_through js_price_span">4,000</span></b></sub>
-            <h2 class="js_onsale_price txt_sale">
-              <b><span class="currency_sign">TWD $</span><span class="js_onsale_price_span">2,500</span></b>
-            </h2>
-          </span>
-          <div class="last">倒數：<span id="gdsStock_1">100</span><small> 組</small></div>
-          <a class="btn btn-outline-info mt-2" href="#" role="button">立即搶</a>
-
-        </div>
-        <div class="col-lg-4 col-md-6 mt-4 mt-lg-0">
-          <div class="icon-box mb-3">
-            <h4 class="title text-center mt-5 mb-3">
-              <a href=""><b>34吋曲面電競螢幕</b></a>
-            </h4>
-            <p class="description">
-              功能強大的遊戲顯示設備，可即時響應任何遊戲，搭載AMD RADEON FreeSync™ 技術，可體驗完美順暢的高畫質和極速遊戲體驗，消除畫面延遲。
-            <ul>
-              <li>144Hz 畫面更新率，物體清晰，遊戲流暢</li>
-              <li>21:9 AH-IPS 曲面電競，支援HDR10</li>
-              <li>十字準線，黑暗場景穩定模式，動態同步，自訂模式</li>
-            </ul>
-            </p>
-
-            <img src="/static/img/screen.jpg" width="500" height="400" alt="screen">
-          </div>
-          <span class="text-right">
-            <sub class="js_price txt_origin" style="display: inline"><b>TWD $<span
-                  class="line_through js_price_span">13,000</span></b></sub>
-            <h2 class="js_onsale_price txt_sale">
-              <b><span class="currency_sign">TWD $</span><span class="js_onsale_price_span">9,900</span></b>
-            </h2>
-          </span>
-          <div class="last">倒數：<span id="gdsStock_1">20</span><small> 台</small></div>
-          <a class="btn btn-outline-info mt-2" href="#" role="button">立即搶</a>
-        </div>
+        {{/each}}
       </div>
     </div>
   </section>

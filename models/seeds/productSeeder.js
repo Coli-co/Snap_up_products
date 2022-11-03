@@ -3,8 +3,8 @@ const pool = require('../../config/pg')
 
 function processData() {
   data.forEach((item) => {
-    const text = `INSERT INTO products (productname, description,feature, originprice, sellprice,img,	quantity) VALUES ('${item.name}','${item.description}','${item.feature}',${item.originprice},${item.sellprice},'${item.img}',${item.quantity})`
-
+    const text = `INSERT INTO products (productname, description,featureone, featuretwo, featurethree, originprice, sellprice,img,	quantity) VALUES ('${item.name}','${item.description}','${item.featureone}', '${item.featuretwo}', '${item.featurethree}', ${item.originprice},${item.sellprice},'${item.img}',${item.quantity})`
+    1
     pool.query(text, (err, res) => {
       if (err) {
         console.log(err)
