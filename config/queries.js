@@ -1,6 +1,5 @@
 const pool = require('./pg')
 
-
 // GET all products
 const getProducts = (req, res) => {
   let featurebox = []

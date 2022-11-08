@@ -18,17 +18,20 @@ const configParams = {
 }
 
 // create pg connection
-const pool = async function pgConnect() {
+async function pgConnect() {
   const pool = new Pool(configParams)
-  const client = await pool.connect()
   try {
-    const res = await pool.query('SELECT NOW()')
-    console.log('Time with the pool:', res.rows[0]['now'])
+    const now = await pool.query('SELECT NOW()')
+    await pool.end()
+    return now
   } catch (err) {
     console.log(err.stack)
-  } finally {
-    client.release()
   }
 }
 
-module.exports = pool
+const connect = (async () => {
+  const res = await pgConnect()
+  console.log('Connect with the pool:', res.rows[0]['now'])
+})()
+
+module.exports = configParams
