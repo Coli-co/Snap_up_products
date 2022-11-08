@@ -45,9 +45,10 @@
                 <b><span class="currency_sign">TWD $</span><span class="js_onsale_price_span">{{this.sellprice}}</span></b>
               </h2>
             </span>
-
-            <a class="btn btn-outline-danger mt-2" href="#" role="button">搶購</a>
-            
+            <form action="/products/{{this.id}}?_method=PUT" method="POST">
+                <a class="btn btn-outline-danger mt-2" href="#" role="button">搶購</a>
+                <button type="submit" class="btn btn-outline-danger mt-2">搶購</button>
+            </form>
           </div>
         </div>
       </div>
@@ -55,6 +56,9 @@
   </section>
   {{/each}}
   <!-- End Portfolio Details Section -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
 </main>
 <!-- End #main -->
 
@@ -75,9 +79,10 @@
   </div>
 </footer>
 <!-- End Footer -->
-
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+<a href="#" class="back-to-bottom d-flex align-items-center justify-content-center"><i
     class="bi bi-arrow-up-short"></i></a>
+
+
 
 <!-- Vendor JS Files -->
 <script src="/static/vendor/purecounter/purecounter_vanilla.js"></script>
