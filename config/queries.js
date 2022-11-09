@@ -1,18 +1,17 @@
-const pool = require('./pg')
+const { Pool } = require('pg')
+const configParams = require('./pg')
 
 // GET all products
-const getProducts = (req, res) => {
-  let featurebox = []
-  return pool.query(
-    'SELECT * FROM products ORDER BY id ASC',
-    (error, results) => {
-      if (error) {
-        throw error
-      }
-      const data = results.rows
-      return res.render('products', { data })
-    }
-  )
+const getProducts = async (req, res) => {
+  const pool = new Pool(configParams)
+  const query = `SELECT * FROM products ORDER BY id ASC`
+  try {
+    const results = await pool.query(query)
+    const data = results.rows
+    res.render('products', { data })
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // GET product by ID

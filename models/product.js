@@ -17,9 +17,8 @@ const text = `CREATE TABLE products (
 
 const createTable = async function (query) {
   try {
-    const pool = await new Pool(configParams)
+    const pool = new Pool(configParams)
     await pool.query(text)
-    // return true
     console.log('Table is successfully created.')
     pool.end()
   } catch (err) {
