@@ -14,17 +14,19 @@ const getProducts = async (req, res) => {
   }
 }
 
-// GET product by ID
-const getProductById = (req, res) => {
+// GET each product by ID
+const getProductById = async (req, res) => {
   const id = parseInt(req.params.id)
-  let restStock = 0
-  pool.query('SELECT * FROM products WHERE id = $1', [id], (error, results) => {
-    if (error) {
-      throw error
-    }
+  const pool = new Pool(configParams)
+  const query = `SELECT * FROM products WHERE id = $1`
+
+  try {
+    const results = await pool.query(query, [id])
     const data = results.rows
     return res.render('detail', { data })
-  })
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // PUT updated data in an existing product quantity
