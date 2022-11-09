@@ -30,34 +30,24 @@ const getProductById = async (req, res) => {
 }
 
 // PUT updated data in an existing product quantity
-const updateProduct = (req, res) => {
+const updateProduct = async (req, res) => {
+  const pool = new Pool(configParams)
   const id = parseInt(req.params.id)
-  const { quantity } = req.body
+  const quantity = req.body.count
+  // check rest of quantity of product
   let restStock = 0
-  pool.query(
-    'SELECT quantity FROM products WHERE id = $1',
-    [id],
-    (error, results) => {
-      if (error) {
-        throw error
-      }
-      restStock = results.rows[0].quantity - quantity
-      pool.query(
-        'UPDATE products SET quantity = $1 WHERE id = $2',
-        [restStock, id],
-        (error, results) => {
-          if (error) {
-            throw error
-          }
-          res
-            .status(200)
-            .send(
-              `Product modified with ID: ${id}, the rest of quantity is ${restStock}.`
-            )
-        }
-      )
-    }
-  )
+  const query = `SELECT quantity FROM products WHERE id = $1`
+  const updateQuery = `UPDATE products SET quantity = $1 WHERE id = $2`
+
+  try {
+    const results = await pool.query(query, [id])
+    const data = results.rows
+    restStock = results.rows[0].quantity - quantity
+    await pool.query(updateQuery, [restStock, id])
+    res.render('snapup')
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 module.exports = { getProducts, getProductById, updateProduct }
