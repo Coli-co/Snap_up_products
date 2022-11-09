@@ -1,22 +1,33 @@
 {
   "name": "Snap_up_products",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Node.js for JWT Authentication with PostgreSQL database",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "seed": "node models/product & node models/seeds/productSeeder",
+    "seed": "node models/product.js & node models/seeds/productSeeder.js & node models/index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "node js",
+    "jwt",
+    "authentication",
+    "express",
+    "postgresql"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
+    "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.5"
   }
 }
