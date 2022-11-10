@@ -23,7 +23,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(cookieParser())
 
-
 // routes for the user API
 app.use('/api/users', userRoutes)
 
@@ -36,6 +35,14 @@ app.get('/products', db.getProducts)
 app.get('/products/:id', db.getProductById)
 
 app.put('/products/:id', db.updateProduct)
+
+app.get('/users/register', (req, res) => {
+  res.render('register')
+})
+
+app.get('/users/login', (req, res) => {
+  res.render('login')
+})
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}.`)

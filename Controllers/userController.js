@@ -27,7 +27,7 @@ const signup = async (req, res) => {
     await user.save()
 
     // set cookie with the token generated
-    res.cookie('jwt', token, { maxAge: 360000, httpOnly: true })
+    res.cookie('jwt', token, { maxAge: 3600, httpOnly: true })
 
     // send users details
     return res.status(201).send({ user, token })
@@ -56,7 +56,7 @@ const login = async (req, res) => {
 
       await user.save()
 
-      res.cookie('jwt', token, { maxAge: 360000, httpOnly: true })
+      res.cookie('jwt', token, { maxAge: 3600, httpOnly: true })
 
       //send user data
       return res.status(201).send({ user, token })

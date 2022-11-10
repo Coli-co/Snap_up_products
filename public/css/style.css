@@ -1400,3 +1400,46 @@ section {
 .breadcrumbs {
   background-image: linear-gradient(180deg, rgba(246, 223, 120, 0.95), white);
 }
+
+.main-member-nav a {
+  font-size: 18px;
+  text-align: center;
+  color: lightgrey;
+  padding: 10px 25px;
+  margin: 10px 10px 10px 10px;
+  letter-spacing: 5px;
+  cursor: pointer;
+}
+
+
+.main-member-nav .active {
+  font-size: 18px;
+  text-align: center;
+  color: white;
+  background: #14c871;
+  ;
+  border-radius: 50px;
+  padding: 10px 25px;
+  margin: 30px 10px 10px 10px;
+  letter-spacing: 5px;
+  cursor: pointer;
+}
+
+.login form div input,
+.register form div input {
+  width: 75%;
+  height: 50px;
+  border-bottom: 2px solid #14c871;
+  background-color: white;
+  font-size: 15px;
+  letter-spacing: 3px;
+  outline: none;
+}
+
+.button2,
+.button1 {
+  background-color: #14c871;
+  border-radius: 50px;
+  width: 200px;
+  text-align: center;
+}
