@@ -14,7 +14,7 @@ const saveUser = async (req, res, next) => {
     })
 
     if (username) {
-      return res.json(409).send('Username had already been used!')
+      return res.status(409).send('Username had already been used!')
     }
 
     // check duplicate email
@@ -25,7 +25,7 @@ const saveUser = async (req, res, next) => {
     })
 
     if (email) {
-      return res.json(409).send('Email had already been used!')
+      return res.status(409).send('Email had already been used!')
     }
 
     next()

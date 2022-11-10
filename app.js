@@ -25,8 +25,11 @@ app.use(cookieParser())
 
 //synchronizing the database and forcing it to false so we dont lose data
 userDB.sequelize.sync({ force: true }).then(() => {
-  console.log('db has been re sync')
+  console.log('All models were synchronized successfully.')
 })
+
+// routes for the user API
+app.use('/api/users', userRoutes)
 
 app.get('/', (req, res) => {
   res.render('index')
