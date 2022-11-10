@@ -28,8 +28,7 @@ const signup = async (req, res) => {
 
     // set cookie with the token generated
     res.cookie('jwt', token, { maxAge: 360000, httpOnly: true })
-    console.log('user', JSON.stringify(user, null, 2))
-    console.log(token)
+
     // send users details
     return res.status(201).send({ user, token })
   } catch (err) {
@@ -42,7 +41,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ where: { email: email } })
     const pass = await bcrypt.compare(password, user.password)
 
     if (user && pass) {
@@ -58,8 +57,7 @@ const login = async (req, res) => {
       await user.save()
 
       res.cookie('jwt', token, { maxAge: 360000, httpOnly: true })
-      console.log('user', JSON.stringify(user, null, 2))
-      console.log(token)
+
       //send user data
       return res.status(201).send({ user, token })
     } else {
@@ -70,7 +68,21 @@ const login = async (req, res) => {
   }
 }
 
+// logout user
+
+const logout = async (req, res) => {
+  try {
+    // 消掉當前 user 的 token
+    req.token = []
+    // 將剩餘資料存回 db
+    await req.user.save()
+    res.status(200).send('Logout successfully!')
+  } catch (err) {
+    console.log(err)
+  }
+}
 module.exports = {
   signup,
-  login
+  login,
+  logout
 }
