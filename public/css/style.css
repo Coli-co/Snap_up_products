@@ -1443,3 +1443,7 @@ section {
   width: 200px;
   text-align: center;
 }
+
+.alert {
+  width: 75%;
+}

@@ -10,6 +10,6 @@ router.post('/register', userAuth.saveUser, signup)
 
 router.post('/login', login)
 
-router.get('/logout', userAuth.checkToken, logout)
+router.get('/logout', logout)
 
 module.exports = router

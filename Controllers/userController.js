@@ -25,6 +25,7 @@ const signup = async (req, res) => {
     user.token = ''
 
     await user.save()
+    req.flash('warning_msg', '請先登入才能搶購 !')
 
     return res.redirect('/users/login')
   } catch (err) {
@@ -70,7 +71,6 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     let token = req.signedCookies.provesnpm
-    console.log('logout token is:', token)
     const user = await User.findOne({ where: { token: token } })
 
     // cancel current user's token
@@ -79,6 +79,7 @@ const logout = async (req, res) => {
     res.clearCookie('provesnpm')
 
     await user.save()
+    req.flash('success_msg', '您已成功登出 !')
 
     return res.redirect('/users/login')
   } catch (err) {
