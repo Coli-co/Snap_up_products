@@ -37,7 +37,6 @@ const saveUser = async (req, res, next) => {
 const checkToken = async (req, res, next) => {
   try {
     const token = req.signedCookies.provesnpm
-
     //check cookie whether is modified by else
     if (token) {
       return next()

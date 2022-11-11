@@ -69,11 +69,14 @@ const login = async (req, res) => {
 // logout user
 const logout = async (req, res) => {
   try {
-    const token = req.signedCookies.provesnpm
+    let token = req.signedCookies.provesnpm
+    console.log('logout token is:', token)
     const user = await User.findOne({ where: { token: token } })
 
     // cancel current user's token
     user.token = ''
+    // clear cookie
+    res.clearCookie('provesnpm')
 
     await user.save()
 

@@ -22,6 +22,15 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(cookieParser(process.env.secret))
+// check login status by cookies
+app.use((req, res, next) => {
+  const token = req.signedCookies.provesnpm
+  if (token) {
+    // return true for render views template
+    res.locals.isAuthenticated = true
+  }
+  next()
+})
 
 // routes for the user API
 app.use('/users', userRoutes)
