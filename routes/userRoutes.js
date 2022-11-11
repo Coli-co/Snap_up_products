@@ -6,10 +6,10 @@ const userAuth = require('../Middleware/userAuth')
 const router = express.Router()
 
 // check userName or paaword whether is duplicate
-router.post('/signup', userAuth.saveUser, signup)
+router.post('/register', userAuth.saveUser, signup)
 
 router.post('/login', login)
 
-router.post('/logout', userAuth.checkToken, logout)
+router.get('/logout', userAuth.checkToken, logout)
 
 module.exports = router

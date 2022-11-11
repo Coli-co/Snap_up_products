@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models/index')
 const jwt = require('jsonwebtoken')
-const user = require('../models/user')
 require('dotenv').config()
 
 // user Schema
@@ -10,27 +9,24 @@ const User = db.users
 // sign a user up
 const signup = async (req, res) => {
   try {
-    const { userName, email, password } = req.body
+    const { userName, email, password, confirmPassword } = req.body
+
+    // check password and confirmPassword
+    if (password !== confirmPassword) {
+      return res.status(409).send('Password incorrect.')
+    }
+
     const data = { userName, email, password: await bcrypt.hash(password, 10) }
 
     // create an instance (just create data)
     const user = await User.build(data)
 
-    //  generate token with user's id and the secret key
-    let token = jwt.sign({ id: user.id }, process.env.secretKey, {
-      expiresIn: 86400 // 24 hours
-    })
-
-    // save token to database
-    user.token = token
+    // empty token for sig up user
+    user.token = ''
 
     await user.save()
 
-    // set cookie with the token generated
-    res.cookie('jwt', token, { maxAge: 3600, httpOnly: true })
-
-    // send users details
-    return res.status(201).send({ user, token })
+    return res.redirect('/users/login')
   } catch (err) {
     console.log(err)
   }
@@ -45,38 +41,43 @@ const login = async (req, res) => {
     const pass = await bcrypt.compare(password, user.password)
 
     if (user && pass) {
-      // create an instance to get default values
-      // if password match
+      // if user and password both  match
       // generate token with user id and secretKey
       let token = jwt.sign({ id: user.id }, process.env.secretKey, {
         expiresIn: 86400
       })
+
       // generate token for login user
       user.token = token
 
       await user.save()
 
-      res.cookie('jwt', token, { maxAge: 3600, httpOnly: true })
+      res.cookie('provesnpm', token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+        signed: true
+      })
 
-      //send user data
-      return res.status(201).send({ user, token })
-    } else {
-      return res.status(401).send('Authentication failed.')
+      return res.redirect('/')
     }
+    return res.redirect('/users/login')
   } catch (err) {
     console.log(err)
   }
 }
 
 // logout user
-
 const logout = async (req, res) => {
   try {
-    // 消掉當前 user 的 token
-    req.token = []
-    // 將剩餘資料存回 db
-    await req.user.save()
-    res.status(200).send('Logout successfully!')
+    const token = req.signedCookies.provesnpm
+    const user = await User.findOne({ where: { token: token } })
+
+    // cancel current user's token
+    user.token = ''
+
+    await user.save()
+
+    return res.redirect('/users/login')
   } catch (err) {
     console.log(err)
   }

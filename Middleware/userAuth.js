@@ -25,12 +25,10 @@ const saveUser = async (req, res, next) => {
         email: req.body.email
       }
     })
-
     if (email) {
       return res.status(409).send('Email had already been used!')
     }
-
-    next()
+    return next()
   } catch (err) {
     console.log(err)
   }
@@ -38,19 +36,13 @@ const saveUser = async (req, res, next) => {
 
 const checkToken = async (req, res, next) => {
   try {
-    const token = req.body.token
-    // validate token
-    const decode = jwt.verify(token, process.env.secretKey)
-    const user = await User.findOne({ where: { token: token } })
+    const token = req.signedCookies.provesnpm
 
-    if (!user) {
-      throw new Error()
+    //check cookie whether is modified by else
+    if (token) {
+      return next()
     }
-    // 將 token 存回 req.token 以供後續使用
-    req.token = token
-    // 將 token 存回 req.token 以供後續使用
-    req.user = user
-    next()
+    return res.redirect('/users/login')
   } catch (err) {
     console.log(err)
   }
