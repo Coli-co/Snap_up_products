@@ -20,6 +20,7 @@ const db = {}
 
 db.Sequelize = Sequelize
 db.sequelize = sequelize
+sequelize.sync() //synchorize all models
 
 // connecting to user model
 db.users = require('./user')(sequelize, DataTypes)

@@ -3,14 +3,14 @@ const configParams = require('../config/pg')
 
 const text = `CREATE TABLE products (
                 id SERIAL ,
-                productname VARCHAR(60) NOT NULL,
-                description VARCHAR(330) NOT NULL,
-                featureone VARCHAR(100) NOT NULL,
-                featuretwo VARCHAR(100) NOT NULL,
-                featurethree VARCHAR(100) NOT NULL,
+                productname TEXT NOT NULL,
+                description TEXT NOT NULL,
+                featureone TEXT NOT NULL,
+                featuretwo TEXT NOT NULL,
+                featurethree TEXT NOT NULL,
                 originprice integer NOT NULL,
                 sellprice integer NOT NULL,
-                img VARCHAR(100) NOT NULL,
+                img TEXT NOT NULL,
                 quantity integer NOT NULL,
                 PRIMARY KEY (id)
                 );`
