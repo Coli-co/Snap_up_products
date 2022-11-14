@@ -1427,7 +1427,6 @@ section {
 
 .login form div input,
 .register form div input {
-  width: 75%;
   height: 50px;
   border-bottom: 2px solid #14c871;
   background-color: white;
@@ -1445,5 +1444,5 @@ section {
 }
 
 .alert {
-  width: 75%;
+  width: auto;
 }

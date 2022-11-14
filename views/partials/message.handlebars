@@ -1,12 +1,12 @@
 {{#if success_msg}}
-<div class="alert alert-success alert-dismissible fade show col-md-5" role="alert">
+<div class="alert alert-success alert-dismissible fade show" role="alert">
   {{success_msg}}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {{/if}}
 
 {{#if warning_msg}}
-<div class="alert alert-warning alert-dismissible fade show col-md-5" role="alert">
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
   {{warning_msg}}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
@@ -14,9 +14,10 @@
 
 {{#if errors}}
   {{#each errors}}
-  <div class="alert alert-warning alert-dismissible fade show col-md-5" role="alert">
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
     {{this.message}}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   {{/each}}
 {{/if}}
+
