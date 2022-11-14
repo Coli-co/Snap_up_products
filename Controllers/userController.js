@@ -35,33 +35,45 @@ const signup = async (req, res) => {
 
 // login authentication
 const login = async (req, res) => {
+  const errors = []
   try {
     const { email, password } = req.body
 
     const user = await User.findOne({ where: { email: email } })
-    const pass = await bcrypt.compare(password, user.password)
 
-    if (user && pass) {
+
+    if (user === null) {
+      errors.push({ message: '您尚未註冊 !' })
+    }
+
+    if (user !== null) {
+      const pass = await bcrypt.compare(password, user.password)
+
+      if (password !== pass) {
+        errors.push({ message: '密碼錯誤 !' })
+      }
       // if user and password both  match
       // generate token with user id and secretKey
-      let token = jwt.sign({ id: user.id }, process.env.secretKey, {
-        expiresIn: 86400
-      })
+      if (user && pass) {
+        let token = jwt.sign({ id: user.id }, process.env.secretKey, {
+          expiresIn: 86400
+        })
 
-      // generate token for login user
-      user.token = token
+        // generate token for login user
+        user.token = token
 
-      await user.save()
+        await user.save()
 
-      res.cookie('provesnpm', token, {
-        maxAge: 60 * 60 * 1000,
-        httpOnly: true,
-        signed: true
-      })
+        res.cookie('provesnpm', token, {
+          maxAge: 60 * 60 * 1000,
+          httpOnly: true,
+          signed: true
+        })
 
-      return res.redirect('/')
+        return res.redirect('/')
+      }
     }
-    return res.redirect('/users/login')
+    return res.render('login', { errors, email, password })
   } catch (err) {
     console.log(err)
   }
