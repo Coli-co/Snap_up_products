@@ -8,11 +8,9 @@ const methodOverride = require('method-override')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const path = require('path')
-const db = require('./config/queries')
 const userDB = require('./models/index')
-const userRoutes = require('./routes/userRoutes')
-const userAuth = require('./Middleware/userAuth')
 
+const routes = require('./routes')
 const app = express()
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
@@ -48,26 +46,9 @@ app.use((req, res, next) => {
   next()
 })
 
-// routes for the user API
-app.use('/users', userRoutes)
 
-app.get('/', (req, res) => {
-  res.render('index')
-})
+app.use(routes)
 
-app.get('/products', db.getProducts)
-
-app.get('/products/:id', userAuth.checkToken, db.getProductById)
-
-app.put('/products/:id', userAuth.checkToken, db.updateProduct)
-
-app.get('/users/register', (req, res) => {
-  res.render('register')
-})
-
-app.get('/users/login', (req, res) => {
-  res.render('login')
-})
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}.`)
