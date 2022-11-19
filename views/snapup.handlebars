@@ -5,10 +5,32 @@
       <div class="row justify-content-center">
         <div class="col-lg-6">
           <h3>搶購狀況</h3>
-          <p>
-            Et aut eum quis fuga eos sunt ipsa nihil. Labore corporis magni
-            eligendi fuga maxime saepe commodi placeat.
-          </p>
+          <div class="row mt-3 text-center">
+            <div class="col-auto">
+              <label>回應時間 秒:毫秒</label>
+              {{#each recordTime}}
+              <p>{{this}}</p>
+              {{/each}}
+            </div>
+            <div class="col-auto">
+              <label>回應消息</label>
+              {{#each snapUpResponse}}
+              <p>{{this}}</p>
+              {{/each}}
+            </div>
+            <div class="col-auto">
+              <label>更新 DB 時間</label>
+              {{#each renewDBtime}}
+              <p>{{this}}</p>
+              {{/each}}
+            </div>
+            <div class="col-auto">
+              <label>是否搶到商品</label>
+              {{#each getProductMsg}}
+              <p>{{this}}</p>
+              {{/each}}
+            </div>
+          </div>
         </div>
       </div>
     </div>

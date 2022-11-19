@@ -8,19 +8,32 @@ const config = {
 }
 AWS.config.update(config)
 
-const sqs = new AWS.SQS({ apiVersion: '2022/11/15' })
+const producerSQS = new AWS.SQS({ apiVersion: '2022/11/15' })
 const queueURL = process.env.QueueUrl
 
 const params = {}
-
-sqs.listQueues(params, function (err, data) {
-  console.log('ListQueues is done.')
+// Calling the listQueues operation
+producerSQS.listQueues(params, function (err, data) {
   if (err) {
     console.log('Error', err)
   } else {
     console.log('Success', data)
   }
+  console.log('ListQueues is done.')
 })
+
+function getRequestTime() {
+  let requestTime = ''
+  const requestDate = new Date()
+  const hours = new Date().getHours()
+  const minutes = new Date().getMinutes()
+  const seconds = new Date().getSeconds()
+  requestTime = `${hours}:${minutes}:${seconds}`
+  console.log('Request time is:', requestTime)
+  return [requestDate, requestTime]
+}
+
+const requestTime = getRequestTime()
 
 let posMsgParams = {
   DelaySeconds: 10, //set delay seconds on individual messages
@@ -34,15 +47,20 @@ let posMsgParams = {
       StringValue: 'Blackie'
     }
   },
-  MessageBody: `This is test msg with local time: ${(timeInMs = Date.now())}`,
+  MessageBody: `I want to snap up with local time: ${requestTime[1]}`,
   QueueUrl: queueURL
 }
 
-sqs.sendMessage(posMsgParams, function (err, data) {
-  console.log('SendMessage is done.')
-  if (err) {
-    console.log('Error', err)
-  } else {
-    console.log('Success', data)
-  }
-})
+// send request
+function sendRequest() {
+  producerSQS.sendMessage(posMsgParams, function (err, data) {
+    if (err) {
+      console.log('Error', err)
+    } else {
+      console.log('Success', data)
+    }
+    console.log('SendMessage is done.')
+  })
+}
+
+module.exports = { sendRequest, getRequestTime }

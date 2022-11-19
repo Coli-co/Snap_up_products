@@ -11,7 +11,7 @@ const text = `CREATE TABLE products (
                 originprice integer NOT NULL,
                 sellprice integer NOT NULL,
                 img TEXT NOT NULL,
-                quantity integer NOT NULL,
+                quantity integer NOT NULL CHECK (quantity >= 0),
                 PRIMARY KEY (id)
                 );`
 

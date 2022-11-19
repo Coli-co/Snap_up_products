@@ -8,7 +8,7 @@ const methodOverride = require('method-override')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const path = require('path')
-const userDB = require('./models/index')
+// const userDB = require('./models/index')
 
 const routes = require('./routes')
 const app = express()
@@ -46,9 +46,7 @@ app.use((req, res, next) => {
   next()
 })
 
-
 app.use(routes)
-
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}.`)

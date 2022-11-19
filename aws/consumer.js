@@ -8,35 +8,55 @@ const config = {
 }
 AWS.config.update(config)
 
-const sqs = new AWS.SQS({ apiVersion: '2022/11/15' })
+const consumerSQS = new AWS.SQS({ apiVersion: '2022/11/15' })
 const queueURL = process.env.QueueUrl
 
 const params = {
   AttributeNames: ['SentTimestamp'],
-  MaxNumberOfMessages: 1,
+  MaxNumberOfMessages: 10,
   MessageAttributeNames: ['All'],
   QueueUrl: queueURL,
-  VisibilityTimeout: 2, // message store
-  WaitTimeSeconds: 3 // poll
+  VisibilityTimeout: 20, // message store
+  WaitTimeSeconds: 20 // poll
 }
 
-sqs.receiveMessage(params, function (err, data) {
-  if (err) {
-    console.log('Receive Error', err)
-  } else if (data.Messages) {
-    console.log('Receive messages:', data.Messages)
+function getResponseTime() {
+  let responseTime = ''
+  const responseDate = new Date()
+  const hours = new Date().getHours()
+  const minutes = new Date().getMinutes()
+  const seconds = new Date().getSeconds()
+  responseTime = `${hours}:${minutes}:${seconds}`
+  console.log('Response time is:', responseTime)
+  return [responseDate, responseTime]
+}
 
-    let deleteParams = {
-      QueueUrl: queueURL,
-      ReceiptHandle: data.Messages[0].ReceiptHandle
-    }
+function receiveAndDeleteMsg() {
+  const responseTime = getResponseTime()
+  consumerSQS.receiveMessage(params, function (err, data) {
+    if (err) {
+      console.log('Receive Error', err)
+    } else if (data.Messages) {
+      console.log(
+        `Receive messages with local time ${responseTime[1]}:`,
+        data.Messages[0]
+      )
 
-    sqs.deleteMessage(deleteParams, function (err, data) {
-      if (err) {
-        console.log('Delete Error', err)
-      } else {
-        console.log('Message Deleted', data)
+      let deleteParams = {
+        QueueUrl: queueURL,
+        ReceiptHandle: data.Messages[0].ReceiptHandle
       }
-    })
-  }
-})
+
+      consumerSQS.deleteMessage(deleteParams, function (err, data) {
+        if (err) {
+          console.log('Delete Error', err)
+        } else {
+          console.log('Message Deleted', data)
+        }
+      })
+    }
+  })
+}
+
+receiveAndDeleteMsg()
+module.exports = { receiveAndDeleteMsg, getResponseTime }
