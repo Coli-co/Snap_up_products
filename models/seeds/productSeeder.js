@@ -2,7 +2,6 @@ const productData = require('../../public/json/product.json').results
 const configParams = require('../../config/pg')
 const { Pool } = require('pg')
 
-// async function processData(data) {}
 
 async function insertData() {
   const pool = new Pool(configParams)

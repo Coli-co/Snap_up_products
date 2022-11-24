@@ -24,5 +24,6 @@ sequelize.sync() //synchorize all models
 
 // connecting to user model
 db.users = require('./user')(sequelize, DataTypes)
+db.clients = require('./client')(sequelize, DataTypes)
 
 module.exports = db

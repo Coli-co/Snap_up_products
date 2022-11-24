@@ -1,7 +1,8 @@
 const { Pool } = require('pg')
 const configParams = require('../config/pg')
 
-const text = `CREATE TABLE products (
+const textone = `DROP TABLE IF EXISTS products`
+const texttwo = `CREATE TABLE products (
                 id SERIAL ,
                 productname TEXT NOT NULL,
                 description TEXT NOT NULL,
@@ -15,10 +16,11 @@ const text = `CREATE TABLE products (
                 PRIMARY KEY (id)
                 );`
 
-const createTable = async function (query) {
+const createTable = async function (queryone, querytwo) {
   try {
     const pool = new Pool(configParams)
-    await pool.query(text)
+    await pool.query(queryone)
+    await pool.query(querytwo)
     console.log('Table is successfully created.')
     pool.end()
   } catch (err) {
@@ -26,4 +28,4 @@ const createTable = async function (query) {
   }
 }
 
-createTable(text)
+createTable(textone, texttwo)
