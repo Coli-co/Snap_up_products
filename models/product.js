@@ -21,7 +21,7 @@ const createTable = async function (queryone, querytwo) {
     const pool = new Pool(configParams)
     await pool.query(queryone)
     await pool.query(querytwo)
-    console.log('Table is successfully created.')
+    console.log('Product table is successfully created.')
     pool.end()
   } catch (err) {
     console.log(err)
