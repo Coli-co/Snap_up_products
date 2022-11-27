@@ -27,13 +27,13 @@ async function snapperStatusCheck(productId) {
   allSnapper.forEach((snapper, index) => {
     // 沒拿到搶購號碼
     if (snapper['snapnumber'] === '0') {
-      snapper['snapstatus'] = '很抱歉! 您沒有被加入隊列中'
+      snapper['snapstatus'] = '很抱歉 ! 您沒有被加入隊列中'
     } else if (
       // 有拿到號碼，餘額不足
       Number(snapper['snapnumber']) !== 0 &&
       Number(snapper['amount']) < price
     ) {
-      snapper['snapstatus'] = '餘額不足、無法搶購 !'
+      snapper['snapstatus'] = '餘額不足、無法搶購 。'
     } else {
       // 有拿到號碼，且餘額足夠
       snapper['snapstatus'] = '排隊中，請耐心等候...'
@@ -84,13 +84,6 @@ async function updateProductStock(productId) {
       } else if (stock === 0) {
         snapper['snapstatus'] = '商品已搶購一空'
       }
-
-      // const updateDB = await pool.query(updateQuery, [stock, product['id']])
-      // const text = `
-      //       UPDATE products
-      //       SET quantity = ${stock}
-      //       WHERE id =  ${product['id']}
-      //       `
     })
     // 更新 db 中商品庫存
     await pool.query(updateQuery, [stock, productId])
@@ -106,4 +99,9 @@ async function updateProductStock(productId) {
   }
 }
 
-module.exports = { productDetail, snapperStatusCheck, qualifiedSnapperSort }
+module.exports = {
+  productDetail,
+  snapperStatusCheck,
+  qualifiedSnapperSort,
+  updateProductStock
+}

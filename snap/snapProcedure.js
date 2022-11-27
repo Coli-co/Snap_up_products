@@ -55,7 +55,7 @@ async function randomIdDistribute(times) {
 async function getSnapNumber(snapBox, randomId) {
   const pool = await new Pool(configParams)
   const q = Math.floor(randomId.length / 2)
-  console.log('q is:', q)
+
   try {
     for (let i = 0; i < q + 1; i++) {
       // 將 id 區分成奇數、偶數
@@ -63,17 +63,28 @@ async function getSnapNumber(snapBox, randomId) {
       let b = 2 * i
 
       // 當 index 範圍超出時，代表已經遍歷完所有數字，終止程式執行
-      if (a > randomId.length || b === randomId.length) {
+      if (a > randomId.length || b > randomId.length) {
         console.log('All client get snap number!')
         return
       }
 
-      // 當 id 數值超出或等於 index 長度時，因為 index 數值比實際長度小 1，所以只須更新其中一個 id 的 snapnumber 欄位
-      if (a === randomId.length) {
+      // 當 index 數值超出或等於 index 長度時，且其中一方的 index 等於 randomId 的最後 index 位置，就只須更新其 index 上 id 的 snapnumber 欄位
+      if (a >= randomId.length && b === randomId.length - 1) {
         const text = `
             UPDATE clients  
               SET snapnumber = ${snapBox[b]}
               WHERE id =  ${randomId[b]}
+            `
+        await pool.query(text)
+        console.log('All client get snap number!')
+        return
+      }
+
+      if (b >= randomId.length && a === randomId.length - 1) {
+        const text = `
+            UPDATE clients  
+              SET snapnumber = ${snapBox[a]}
+              WHERE id =  ${randomId[a]}
             `
         await pool.query(text)
         console.log('All client get snap number!')
