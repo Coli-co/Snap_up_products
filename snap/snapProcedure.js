@@ -11,7 +11,6 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
   try {
     for (let i = 0; i < fixedNumber; i++) {
       const value = await pool.query(`SELECT nextval('order_id')`)
-      // console.log('value is:', value.rows[0].nextval)
       const snapNumber = value.rows[0].nextval
 
       await snapBox.push(snapNumber)
@@ -69,8 +68,7 @@ async function getSnapNumber(snapBox, randomId) {
         return
       }
 
-      // 當 id 數值超出或等於 index 長度時，因為 index 數值跛實際長度小 1，
-      // 所以只須更新其中一個 id 的 snapnumber 欄位
+      // 當 id 數值超出或等於 index 長度時，因為 index 數值比實際長度小 1，所以只須更新其中一個 id 的 snapnumber 欄位
       if (a === randomId.length) {
         const text = `
             UPDATE clients  
