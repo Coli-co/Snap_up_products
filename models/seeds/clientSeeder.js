@@ -21,6 +21,6 @@ async function insertClientData(times) {
   pool.end()
 }
 
-insertClientData(100)
+insertClientData(300)
 
 module.exports = insertClientData

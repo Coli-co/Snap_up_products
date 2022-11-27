@@ -14,7 +14,7 @@ const configParams = {
   idleTimeoutMillis: 30000,
   // number of milliseconds a client must sit idle in the pool and not be checked out before it is disconnected from the backend and discarded
   // default is 10000 (10 seconds)
-  connectionTimeoutMillis: 10000
+  connectionTimeoutMillis: 20000
 }
 
 // create pg connection
