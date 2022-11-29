@@ -1452,3 +1452,46 @@ img {
   margin-left: auto;
   margin-right: auto;
 }
+
+#table-wrapper {
+  position: relative;
+}
+
+#table-scroll {
+  height: 350px;
+  overflow: auto;
+  margin-top: 20px;
+  white-space: nowrap;
+  overflow-x: auto
+}
+
+
+table {
+  text-align: center;
+  position: relative;
+  border-collapse: collapse;
+}
+
+th {
+  background: white;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+
+tr.grey th {
+  background-color: grey;
+  color: white;
+}
+
+tr.blue th {
+  background-color: rgb(0, 128, 255);
+  color: white;
+}
+
+
+tr.green th {
+  background-color: green;
+  color: white;
+}
