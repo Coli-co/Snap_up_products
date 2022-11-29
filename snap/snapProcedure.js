@@ -12,8 +12,7 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
     for (let i = 0; i < fixedNumber; i++) {
       const value = await pool.query(`SELECT nextval('order_id')`)
       const snapNumber = value.rows[0].nextval
-
-      await snapBox.push(snapNumber)
+      snapBox.push(snapNumber)
       // 超出搶購號碼，領到的號碼為 0
       if (Number(snapNumber) === fixedNumber) {
         const overNumber = actualNumber - fixedNumber
@@ -21,7 +20,6 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
         for (let j = 0; j < overNumber; j++) {
           snapBox.push('0')
         }
-
         return snapBox
       }
     }
@@ -35,7 +33,7 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
 // 隨機 id -> 產生隨機搶購者
 async function randomIdDistribute(times) {
   for (let i = 0; i < times; i++) {
-    const randomId = Math.floor(Math.random() * 100) + 1
+    const randomId = Math.floor(Math.random() * times) + 1
     await checkIdBox.push(randomId)
   }
 
@@ -43,7 +41,7 @@ async function randomIdDistribute(times) {
   // 替換重複 id
   checkIdBox.forEach((id, index) => {
     while (checkId.has(id)) {
-      checkIdBox[index] = id = Math.floor(Math.random() * 100) + 1
+      checkIdBox[index] = id = Math.floor(Math.random() * times) + 1
     }
     checkId.add(id)
   })
