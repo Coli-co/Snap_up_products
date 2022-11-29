@@ -1,6 +1,7 @@
 const { Pool, Client } = require('pg')
 const configParams = require('./pg')
-// const CronJob = require('cron').CronJob
+const dropInUseClientTable = require('../models/drop/dropInUseClient')
+const insertClientData = require('../models/seeds/clientSeeder')
 const snapSequence = require('../sequences/orderId')
 const { sendRequest, getRequestTime } = require('../aws/producer')
 const { receiveAndDeleteMsg, getResponseTime } = require('../aws/consumer')
@@ -61,12 +62,17 @@ const updateProduct = async (req, res) => {
 
   // const quantity = parseInt(req.body.count)
   // check rest of quantity of product
-  const query = `SELECT quantity FROM products WHERE id = $1`
+  const query = `SELECT * FROM products WHERE id = $1`
 
   // 先檢查商品庫存是否還有
   const results = await pool.query(query, [productId])
   let restStock = results.rows[0].quantity
+  let productName = results.rows[0].productname
+  console.log('product name is:', productName)
+
   console.log('original stock is:', restStock)
+  // 清空搶購者名單
+  // await dropInUseClientTable()
 
   try {
     if (restStock > 0) {
@@ -92,16 +98,32 @@ const updateProduct = async (req, res) => {
       // console.log('millsecDiff is:', millsecDiff)
       recordTime.push(`${secDiff}:${millsecDiff}`)
 
-      //產生要分配給搶購者的序列號碼，
-      await snapSequence(60)
-
-      // 前者為預訂搶購名額，後者為實際搶購名額
-      const snapBox = await generateSnapNumber(60, 88)
-      // 產生隨機搶購者 (隨機 id)
-      const randomIdGroup = await randomIdDistribute(88)
-
-      // 分發搶購號碼給搶購者
-      await getSnapNumber(snapBox, randomIdGroup)
+      // 模擬不同商品搶購情境
+      if (productName === '全自動咖啡機') {
+        // 產生新的搶購者名單
+        await insertClientData(150)
+        //產生要分配給搶購者的序列號碼，
+        await snapSequence(60)
+        // 前者為預訂搶購名額，後者為實際搶購名額
+        const snapBox = await generateSnapNumber(60, 150)
+        // 產生隨機搶購者 (隨機 id)
+        const randomIdGroup = await randomIdDistribute(150)
+        // 分發搶購號碼給搶購者
+        await getSnapNumber(snapBox, randomIdGroup)
+      } else if (productName === '黃金脆皮雞腿排') {
+        await insertClientData(500)
+        await snapSequence(150)
+        const snapBox = await generateSnapNumber(150, 500)
+        const randomIdGroup = await randomIdDistribute(300)
+        await getSnapNumber(snapBox, randomIdGroup)
+      } else {
+        await insertClientData(100)
+        await snapSequence(30)
+        const snapBox = await generateSnapNumber(30, 100)
+        const randomIdGroup = await randomIdDistribute(100)
+        await getSnapNumber(snapBox, randomIdGroup)
+      }
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
       // 當收到 request 並處理完 queue 的 request 時
       // 先給予使用者回應

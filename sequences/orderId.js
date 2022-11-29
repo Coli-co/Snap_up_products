@@ -17,6 +17,4 @@ async function snapSequence(maxvalue) {
   console.log('Order id sequence created.')
 }
 
-snapSequence(60)
-
 module.exports = snapSequence

@@ -57,7 +57,7 @@ async function qualifiedSnapperSort(productId) {
   return qualifiedSnapper
 }
 
-// qualifiedSnapperSort(1)
+
 
 // 更新商品庫存
 async function updateProductStock(productId) {
