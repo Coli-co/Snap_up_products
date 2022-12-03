@@ -1,5 +1,7 @@
 const AWS = require('aws-sdk')
 require('dotenv').config()
+const { recordTime } = require('./recordTime')
+const { getLogData } = require('./lambdaLog')
 
 const config = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -17,34 +19,20 @@ producerSQS.listQueues(params, function (err, data) {
   if (err) {
     console.log('Error', err)
   } else {
-    console.log('Success', data)
+    // console.log('Success', data)
+    console.log('ListQueues is done.')
   }
-  console.log('ListQueues is done.')
+  // console.log('ListQueues is done.')
 })
 
-function getRequestTime() {
-  let requestTime = ''
-  const requestDate = new Date()
-  const hours = new Date().getHours()
-  const minutes = new Date().getMinutes()
-  const seconds = new Date().getSeconds()
-  requestTime = `${hours}:${minutes}:${seconds}`
-  console.log('Request time is:', requestTime)
-  return [requestDate, requestTime]
-}
-
-const requestTime = getRequestTime()
+const requestTime = recordTime()
 
 let posMsgParams = {
-  DelaySeconds: 10, //set delay seconds on individual messages
+  DelaySeconds: 0, //set delay seconds on individual messages
   MessageAttributes: {
-    Title: {
+    Product: {
       DataType: 'String',
-      StringValue: 'AWS 30 Days'
-    },
-    Author: {
-      DataType: 'String',
-      StringValue: 'Blackie'
+      StringValue: 'Snap Product '
     }
   },
   MessageBody: `I want to snap up with local time: ${requestTime[1]}`,
@@ -53,14 +41,24 @@ let posMsgParams = {
 
 // send request
 function sendRequest() {
-  producerSQS.sendMessage(posMsgParams, function (err, data) {
+  const data = producerSQS.sendMessage(posMsgParams, function (err, data) {
     if (err) {
       console.log('Error', err)
     } else {
-      console.log('Success', data)
+      // console.log('Send request to SQS is successful.')
+      // console.log('Success', data.ResponseMetadata)
     }
-    console.log('SendMessage is done.')
+    // console.log('SendMessage is done.')
   })
+  return data
 }
 
-module.exports = { sendRequest, getRequestTime }
+// async function test() {
+//   for (let i = 0; i < 3; i++) {
+//     await getLogData(sendRequest())
+//   }
+// }
+
+// test()
+
+module.exports = { sendRequest }

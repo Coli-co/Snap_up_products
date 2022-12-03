@@ -1,5 +1,7 @@
 const { Pool } = require('pg')
 const configParams = require('../config/pg')
+const { recordTime, diffTime } = require('../aws/recordTime')
+const { getPreResponse } = require('./getPreMsg')
 
 // 檢查商品資訊 : id 、庫存、價格
 async function productDetail(productId) {
@@ -16,7 +18,7 @@ async function snapperStatusCheck(productId) {
   // 搶購商品資訊
   const snapProduct = await productDetail(productId)
   const price = snapProduct['sellprice']
-  // 實搶購者名單資訊
+  // 實際搶購者名單資訊
   const text = `SELECT * FROM clients WHERE snapnumber IS NOT NULL`
   const result = await pool.query(text)
   const allSnapper = result.rows // 所有搶購者 data
@@ -24,46 +26,46 @@ async function snapperStatusCheck(productId) {
   let totalQueryAmount = 0
   // 紀錄有資格的搶購者名單
   let qualifiedSnapper = []
-  allSnapper.forEach((snapper, index) => {
+
+  // 給予搶購者初步回應之後，再去確認搶購者資訊
+  const getPreResponseSnapper = await getPreResponse()
+
+  getPreResponseSnapper.forEach((snapper, index) => {
     // 沒拿到搶購號碼
     if (snapper['snapnumber'] === '0') {
-      snapper['snapstatus'] = '很抱歉 ! 您沒有被加入隊列中'
+      snapper['snapStatus'] = '很抱歉 ! 您沒有被加入隊列中'
+      snapper['dbProcessTime'] = '0:000' // 不具備資格，不用給 DB 處理
     } else if (
       // 有拿到號碼，餘額不足
       Number(snapper['snapnumber']) !== 0 &&
       Number(snapper['amount']) < price
     ) {
-      snapper['snapstatus'] = '餘額不足、無法搶購 。'
+      snapper['snapStatus'] = '餘額不足、無法搶購 。'
+      snapper['dbProcessTime'] = '0:000'
     } else {
       // 有拿到號碼，且餘額足夠
-      snapper['snapstatus'] = '排隊中，請耐心等候...'
+      snapper['snapStatus'] = '排隊中，請耐心等候...'
       totalQueryAmount += Number(snapper['quantity'])
       qualifiedSnapper.push(snapper)
     }
   })
-  return [allSnapper, qualifiedSnapper, totalQueryAmount]
-}
-
-// 將搶購者按照搶購號碼排序
-async function qualifiedSnapperSort(productId) {
-  const snapStatus = await snapperStatusCheck(productId)
-  // 取得有資格搶購者名單
-  const qualifiedSnapper = await snapStatus[1]
-
   // 按照搶購號碼遞增排序
-  qualifiedSnapper.sort((a, b) => {
+  const qualifiedSnapperSort = qualifiedSnapper.sort((a, b) => {
     return Number(a['snapnumber']) - Number(b['snapnumber'])
   })
-  return qualifiedSnapper
+  // console.log('qualifiedSnapperSort:', qualifiedSnapper)
+  // console.log('length:', qualifiedSnapper.length)
+
+  return [getPreResponseSnapper, qualifiedSnapperSort, totalQueryAmount]
 }
 
-
+// snapperStatusCheck(2)
 
 // 更新商品庫存
-async function updateProductStock(productId) {
+async function updateProductStock(productId, qualifiedSnapper) {
   const pool = await new Pool(configParams)
   const snapProduct = await productDetail(productId)
-  const qualifiedSnapper = await qualifiedSnapperSort(productId)
+  // const qualifiedSnapper = await qualifiedSnapperSort(productId)
   // const productId = snapProduct['id']
   let stock = snapProduct['quantity'] // 商品庫存
   const searchQuery = `SELECT * FROM products WHERE id = $1`
@@ -78,16 +80,27 @@ async function updateProductStock(productId) {
       //計算總搶購數量
       if (reqQuantity <= stock) {
         stock -= reqQuantity
-        snapper['snapstatus'] = '恭喜您搶到商品'
+        snapper['snapStatus'] = '恭喜您搶到商品'
       } else if (reqQuantity > stock) {
-        snapper['snapstatus'] = '商品庫存不足'
+        snapper['snapStatus'] = '商品庫存不足'
       } else if (stock === 0) {
-        snapper['snapstatus'] = '商品已搶購一空'
+        snapper['snapStatus'] = '商品已搶購一空'
       }
     })
     // 更新 db 中商品庫存
     await pool.query(updateQuery, [stock, productId])
     console.log('Update product quantity is done!')
+
+    // 紀錄 db 處理時間
+    let dbProcessMsgTime = recordTime()
+    let dbProcessMsgDate = dbProcessMsgTime[0]
+
+    qualifiedSnapper.forEach((snapper) => {
+      let dbResponseTime = diffTime(snapper['requestDate'], dbProcessMsgDate)
+      // 紀錄更新資料完的時間
+      snapper['dbProcessTime'] = `${dbResponseTime[0]}:${dbResponseTime[1]}`
+    })
+
     // 查詢該商品資訊
     const queryProduct = await pool.query(searchQuery, [productId])
     const productInfo = queryProduct.rows[0]
@@ -102,6 +115,5 @@ async function updateProductStock(productId) {
 module.exports = {
   productDetail,
   snapperStatusCheck,
-  qualifiedSnapperSort,
   updateProductStock
 }

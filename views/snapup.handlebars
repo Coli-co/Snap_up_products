@@ -1,149 +1,149 @@
 {{#if (emptyStock restStock)}}
-<div class="row justify-content-center">
-  <div class="col-4 text-center">
-    <p><b>品名: {{emptyProduct.productname}}</b></p>
-    <p><b>特賣價: {{emptyProduct.sellprice}}</b></p>
-    <p><b>庫存: {{emptyProduct.quantity}}</b></p>
+  <div class="row justify-content-center">
+    <div class="col-4 text-center">
+      <p><b>品名: {{emptyProduct.productname}}</b></p>
+      <p><b>特賣價: {{emptyProduct.sellprice}}</b></p>
+      <p><b>庫存: {{emptyProduct.quantity}}</b></p>
+    </div>
+    <div class="col-4" >
+      <img class="responsive" src="{{emptyProduct.img}}" width="100" height="100" alt="snapProductimage">
+    </div>
+    <div class="row text-center">
+      <h3><b>本商品已搶購一空 !<b></h3>
+    </div>
   </div>
-  <div class="col-4" >
-    <img class="responsive" src="{{emptyProduct.img}}" width="100" height="100" alt="snapProductimage">
+
+  <p class="text-center"><b>...</b></p>
+
+
+
+  {{else}}
+  <h1 class="text-center mb-3"><b>搶購狀況<b></h1>
+  <br>
+  <h2 class="text-center" style="color:blue;"><b>搶購商品</b></h2>
+  <div class="row justify-content-center">
+    <div class="col-4 text-center">
+      <p>品名: {{product.productname}}</p>
+      <p>特賣價: {{product.sellprice}}</p>
+      <p>總搶購數量: {{totalQueryAmount}}</p>
+      <p>庫存: {{productInfo.quantity}}</p>
+    </div>
+    <div class="col-4">
+      <img class="responsive" src="{{product.img}}" width="200" height="200" alt="snapProductimage">
+    </div>
   </div>
-  <div class="row text-center">
-    <h3><b>本商品已搶購一空 !<b></h3>
-  </div>
-</div>
+  <br>
+  <br>
+  <p class="text-center"><b>...</b></p>
+  <br>
 
-<p class="text-center"><b>...</b></p>
-
-
-
-{{else}}
-<h1 class="text-center mb-3"><b>搶購狀況<b></h1>
-<br>
-<h2 class="text-center" style="color:blue;"><b>搶購商品</b></h2>
-<div class="row justify-content-center">
-  <div class="col-4 text-center">
-    <p>品名: {{product.productname}}</p>
-    <p>特賣價: {{product.sellprice}}</p>
-    <p>總搶購數量: {{totalQueryAmount}}</p>
-    <p>庫存: {{productInfo.quantity}}</p>
-  </div>
-  <div class="col-4">
-    <img class="responsive" src="{{product.img}}" width="200" height="200" alt="snapProductimage">
-  </div>
-</div>
-<br>
-<br>
-<p class="text-center"><b>...</b></p>
-<br>
-
-<h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>參與搶購者</b> </h3>
-<div id="table-wrapper">
-  <div id="table-scroll">
-  <table class="table table-bordered border-dark align-middle table-hover scroll-down">
-    <thead class="thead-dark" >
-      <tr class="grey">
-        <th scope="col" style="width:10%;">id</th>
-        <th scope="col" style="width:15%;">Name</th>
-        <th scope="col" style="width:10%;">回應時間 秒:毫秒</th>
-        <th scope="col" style="width:20%;">回應消息</th>
-        <th scope="col" style="width:10%;">Snapnumber</th>
-        <th scope="col" style="width:10%;">Amount</th>
-        <th scope="col" style="width:20%;">Snapstatus</th>
-        <th scope="col" style="width:10%;"> DB 處理時間</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each allSnapper}}
-      <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.name}}</td>
-        {{#each recordTime}}
-        <p>{{this}}</p>
+  <h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>參與搶購者</b> </h3>
+  <div id="table-wrapper">
+    <div id="table-scroll">
+    <table class="table table-bordered border-dark align-middle table-hover scroll-down">
+      <thead class="thead-dark" >
+        <tr class="grey">
+          <th scope="col" style="width:10%;">id</th>
+          <th scope="col" style="width:15%;">Name</th>
+          <th scope="col" style="width:10%;">回應時間 秒:毫秒</th>
+          <th scope="col" style="width:20%;">回應消息</th>
+          <th scope="col" style="width:10%;">搶購號碼</th>
+          <th scope="col" style="width:10%;">帳戶餘額</th>
+          <th scope="col" style="width:20%;">搶購狀態</th>
+          <th scope="col" style="width:10%;"> DB 處理時間 秒:毫秒</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each allSnapper}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.name}}</td> 
+          <td>{{this.getResponseTime}}</td> 
+          <td>{{this.getResMessage}}</td>     
+          <td>{{this.snapnumber}}</td>
+          <td>{{this.amount}}</td>
+          <td>{{this.snapStatus}}</td>
+          {{#if (hasDBProcessTimeKey this)}}
+            <td>{{this.dbProcessTime}}</td>
+          {{else}}
+            <td>資料處理中...</td>
+          {{/if}}
+        </tr>
         {{/each}}
-        {{#each snapUpResponse}}
-        <p>{{this}}</p>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+  {{#if qualifiedSnapper}}
+  <h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>有資格的搶購者</b></h3>
+  <div id="table-wrapper">
+    <div id="table-scroll">
+    <table class="table table-bordered border-primary align-middle table-hover">
+      <thead class="thead-dark">
+        <tr class="blue">
+          <th scope="col" style="width:10%;">id</th>
+          <th scope="col" style="width:15%;">Name</th>
+          <th scope="col" style="width:10%;">搶購號碼</th>
+          <th scope="col" style="width:10%;">帳戶餘額</th>
+          <th scope="col" style="width:20%;">搶購狀態</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each qualifiedSnapper}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.snapnumber}}</td>
+          <td>{{this.amount}}</td>
+          <td>{{this.snapStatus}}</td>
+        </tr>
         {{/each}}
-        <td>{{this.snapnumber}}</td>
-        <td>{{this.amount}}</td>
-        <td>{{this.snapstatus}}</td>
-        {{#each renewDBtime}}
-        <p>{{this}}</p>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  {{/if}}
+
+  <br>
+  <br>
+
+  {{#if qualifiedSnapperUpdate}}
+  <h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>最新搶購狀態</b> </h3>
+  <div id="table-wrapper">
+    <div id="table-scroll">
+    <table class="table table-bordered border-success align-middle table-hover">
+      <thead class="thead-dark">
+        <tr class="green">
+          <th scope="col" style="width:10%;">id</th>
+          <th scope="col" style="width:15%;">Name</th>
+          <th scope="col" style="width:10%;">搶購號碼</th>
+          <th scope="col" style="width:10%;">搶購數量</th>
+          <th scope="col" style="width:10%;">帳戶餘額</th>
+          <th scope="col" style="width:20%;">搶購狀態</th>
+          <th scope="col" style="width:10%;"> DB 處理時間 秒:毫秒</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each qualifiedSnapperUpdate}}
+        <tr>
+          <td>{{this.id}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.snapnumber}}</td>
+          <td>{{this.quantity}}</td>
+          <td>{{this.amount}}</td>
+          <td>{{this.snapStatus}}</td>
+          <td>{{this.dbProcessTime}}</td>
+        </tr>
         {{/each}}
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+    </div>
   </div>
-</div>
-
-<br>
-<br>
-
-{{#if qualifiedSnapper}}
-<h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>有資格的搶購者</b></h3>
-<div id="table-wrapper">
-  <div id="table-scroll">
-  <table class="table table-bordered border-primary align-middle table-hover">
-    <thead class="thead-dark">
-      <tr class="blue">
-        <th scope="col" style="width:10%;">id</th>
-        <th scope="col" style="width:15%;">Name</th>
-        <th scope="col" style="width:10%;">Snapnumber</th>
-        <th scope="col" style="width:10%;">Amount</th>
-        <th scope="col" style="width:20%;">Snapstatus</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each qualifiedSnapper}}
-      <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.name}}</td>
-        <td>{{this.snapnumber}}</td>
-        <td>{{this.amount}}</td>
-        <td>{{this.snapstatus}}</td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  </div>
-</div>
-{{/if}}
-
-<br>
-<br>
-
-{{#if qualifiedSnapperUpdate}}
-<h3 class="text-center mb-2" style="font-family:'Times New Roman', Times, serif;"> <b>最新搶購狀態</b> </h3>
-<div id="table-wrapper">
-  <div id="table-scroll">
-  <table class="table table-bordered border-success align-middle table-hover">
-    <thead class="thead-dark">
-      <tr class="green">
-        <th scope="col" style="width:10%;">id</th>
-        <th scope="col" style="width:15%;">Name</th>
-        <th scope="col" style="width:10%;">Snapnumber</th>
-        <th scope="col" style="width:10%;">quantity</th>
-        <th scope="col" style="width:10%;">Amount</th>
-        <th scope="col" style="width:20%;">Snapstatus</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each qualifiedSnapperUpdate}}
-      <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.name}}</td>
-        <td>{{this.snapnumber}}</td>
-        <td>{{this.quantity}}</td>
-        <td>{{this.amount}}</td>
-        <td>{{this.snapstatus}}</td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  </div>
-</div>
-{{/if}}
+  {{/if}}
 {{/if}}
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
     class="bi bi-arrow-up-short"></i></a>

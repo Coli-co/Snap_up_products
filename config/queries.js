@@ -1,11 +1,13 @@
-const { Pool, Client } = require('pg')
+const { Pool } = require('pg')
 const configParams = require('./pg')
 const dropInUseClientTable = require('../models/drop/dropInUseClient')
 const insertClientData = require('../models/seeds/clientSeeder')
 const snapSequence = require('../sequences/orderId')
-const { sendRequest, getRequestTime } = require('../aws/producer')
-const { receiveAndDeleteMsg, getResponseTime } = require('../aws/consumer')
-const { emptyStock } = require('../helper/emptyStock')
+
+const {
+  emptyStock,
+  hasDBProcessTimeKey
+} = require('../helper/handlebarsHelper')
 const {
   generateSnapNumber,
   randomIdDistribute,
@@ -46,13 +48,6 @@ const getProductById = async (req, res) => {
   }
 }
 
-// record request time
-let productStock = [] //紀錄商品庫存
-let recordTime = []
-let snapUpResponse = [] // sqs回應消息
-let productMsg = [] // 搶商品狀態消息
-let renewDBtime = [] //更新 DB 時間
-
 // PUT updated data in an existing product quantity
 const updateProduct = async (req, res) => {
   const pool = new Pool(configParams)
@@ -76,28 +71,6 @@ const updateProduct = async (req, res) => {
 
   try {
     if (restStock > 0) {
-      // record request time
-      // start sqs
-      // const result = await sendRequest()
-      // const requestTime = await getRequestTime()
-      const requestTime = getRequestTime()
-      const requestDate = requestTime[0]
-      // console.log('main requestDate is:', requestDate)
-
-      // // polling message
-      // await receiveAndDeleteMsg()
-
-      // const responseTime = await getResponseTime()
-      const responseTime = getResponseTime()
-      const responseDate = responseTime[0]
-      // console.log('main responseDate is:', responseDate)
-      const reqAndResDiff = new Date(responseDate - requestDate)
-      const secDiff = reqAndResDiff.getSeconds()
-      const millsecDiff = reqAndResDiff.getMilliseconds()
-      // console.log('secDiff is:', secDiff)
-      // console.log('millsecDiff is:', millsecDiff)
-      recordTime.push(`${secDiff}:${millsecDiff}`)
-
       // 模擬不同商品搶購情境
       if (productName === '全自動咖啡機') {
         // 產生新的搶購者名單
@@ -114,7 +87,7 @@ const updateProduct = async (req, res) => {
         await insertClientData(500)
         await snapSequence(150)
         const snapBox = await generateSnapNumber(150, 500)
-        const randomIdGroup = await randomIdDistribute(300)
+        const randomIdGroup = await randomIdDistribute(500)
         await getSnapNumber(snapBox, randomIdGroup)
       } else {
         await insertClientData(100)
@@ -123,62 +96,38 @@ const updateProduct = async (req, res) => {
         const randomIdGroup = await randomIdDistribute(100)
         await getSnapNumber(snapBox, randomIdGroup)
       }
-      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-      // 當收到 request 並處理完 queue 的 request 時
-      // 先給予使用者回應
-      // snapUpResponse.push('您的訂單已送出，請耐心等候 !')
       const product = await productDetail(productId)
 
+      // 搶購之前，先給予使用者初步回應，讓使用者不會等太久
+      // 之後去檢查每位搶購者是否具備資格
       const snapperStatus = await snapperStatusCheck(productId)
-      const allSnapper = snapperStatus[0]
-      const totalQueryAmount = snapperStatus[2]
+      const allSnapper = snapperStatus[0] // 所有搶購者
+      const qualifiedSnapper = snapperStatus[1] // 具備資格的搶購者
+      const totalQueryAmount = snapperStatus[2] // 總搶購數量
 
-      const qualifiedSnapper = await qualifiedSnapperSort(productId)
-
-      //[allSnapper, qualifiedSnapper, totalQueryAmount]
-
-      const result = await updateProductStock(productId)
+      // 更新 DB 資料
+      const result = await updateProductStock(productId, qualifiedSnapper)
       const qualifiedSnapperUpdate = result[0]
       const productInfo = result[1]
       // [qualifiedSnapper, productInfo]
 
-      // 處理完sqs訊息才能去 db 更動資料
-      // update product stock
-      // const results = await pool.query(query, [id])
-
-      //   // const time = new Date()
-      //   // const renewDBdate = new Date(time - reqAndResDiff)
-      //   // const DBsecDiff = renewDBdate.getSeconds()
-      //   // const DBmillsecDiff = renewDBdate.getMilliseconds()
-      //   // console.log('DBsecDiff is:', secDiff)
-      //   // console.log('DBmillsecDiff is:', millsecDiff)
-      //   // console.log('-------------')
-      //   // renewDBtime.push(`${DBsecDiff}:${DBmillsecDiff}`)
-      // }
       return res.render('snapup', {
         product,
         totalQueryAmount,
         productInfo,
         allSnapper,
         qualifiedSnapper,
-        qualifiedSnapperUpdate
+        qualifiedSnapperUpdate,
+        hasDBProcessTimeKey
       })
-      // return res.render('snapup', {
-      //   productStock,
-      //   recordTime,
-      //   snapUpResponse,
-      //   getProductMsg,
-      //   renewDBtime
-      // })
     }
 
     if (restStock === 0) {
       const text = `SELECT * FROM products WHERE id = $1`
       const result = await pool.query(text, [productId])
       const emptyProduct = result.rows[0]
-      // console.log('produc is:', product)
-      // productMsg.push('本商品已搶購一空 !')
+
       return res.render('snapup', {
         emptyStock,
         restStock,
@@ -187,21 +136,7 @@ const updateProduct = async (req, res) => {
     }
   } catch (err) {
     console.log('err is:', err)
-
-    // await client.query('ROLLBACK')
-    // console.log('transaction err is:', err)
-    // return res.render('snapup', {
-    //   productStock,
-    //   recordTime,
-    //   snapUpResponse,
-    //   productMsg,
-    //   renewDBtime
-    // })
-    // error: new row for relation "products" violates check constraint "products_quantity_check"
   }
-  // finally {
-  //   client.release()
-  // }
 }
 
 module.exports = { getProducts, getProductById, updateProduct }

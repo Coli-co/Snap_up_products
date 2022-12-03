@@ -1,5 +1,7 @@
 const { Pool } = require('pg')
 const configParams = require('../config/pg')
+const insertClientData = require('../models/seeds/clientSeeder')
+const snapSequence = require('../sequences/orderId')
 
 let snapBox = [] //搶購號碼
 let checkIdBox = [] //id檢查箱，用以檢查重複號碼
@@ -116,5 +118,15 @@ async function getSnapNumber(snapBox, randomId) {
     console.log(err)
   }
 }
+
+// async function test() {
+//   await insertClientData(150)
+//   await snapSequence(60)
+//   const snapBox = await generateSnapNumber(60, 150)
+//   const randomIdGroup = await randomIdDistribute(150)
+//   await getSnapNumber(snapBox, randomIdGroup)
+// }
+
+// test()
 
 module.exports = { generateSnapNumber, randomIdDistribute, getSnapNumber }

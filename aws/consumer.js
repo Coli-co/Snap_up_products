@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 require('dotenv').config()
+const { recordTime } = require('./recordTime')
 
 const config = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -20,19 +21,8 @@ const params = {
   WaitTimeSeconds: 20 // poll
 }
 
-function getResponseTime() {
-  let responseTime = ''
-  const responseDate = new Date()
-  const hours = new Date().getHours()
-  const minutes = new Date().getMinutes()
-  const seconds = new Date().getSeconds()
-  responseTime = `${hours}:${minutes}:${seconds}`
-  console.log('Response time is:', responseTime)
-  return [responseDate, responseTime]
-}
-
 function receiveAndDeleteMsg() {
-  const responseTime = getResponseTime()
+  const responseTime = recordTime()
   consumerSQS.receiveMessage(params, function (err, data) {
     if (err) {
       console.log('Receive Error', err)
@@ -58,5 +48,4 @@ function receiveAndDeleteMsg() {
   })
 }
 
-receiveAndDeleteMsg()
-module.exports = { receiveAndDeleteMsg, getResponseTime }
+module.exports = { receiveAndDeleteMsg }
