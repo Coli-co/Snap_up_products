@@ -61,13 +61,10 @@ const updateProduct = async (req, res) => {
 
   // 先檢查商品庫存是否還有
   const results = await pool.query(query, [productId])
-  let restStock = results.rows[0].quantity
-  let productName = results.rows[0].productname
-  console.log('product name is:', productName)
+  const originalStock = results.rows[0].quantity //原本庫存
+  let restStock = results.rows[0].quantity // 剩餘庫存
 
-  console.log('original stock is:', restStock)
-  // 清空搶購者名單
-  // await dropInUseClientTable()
+  let productName = results.rows[0].productname
 
   try {
     if (restStock > 0) {
@@ -103,23 +100,35 @@ const updateProduct = async (req, res) => {
       // 之後去檢查每位搶購者是否具備資格
       const snapperStatus = await snapperStatusCheck(productId)
       const allSnapper = snapperStatus[0] // 所有搶購者
+      const totalSnapperCount = allSnapper.length
       const qualifiedSnapper = snapperStatus[1] // 具備資格的搶購者
+      const qualifiedSnapperCount = qualifiedSnapper.length
       const totalQueryAmount = snapperStatus[2] // 總搶購數量
+      const notInLineSnapperCount = snapperStatus[3].length // 未入隊列的搶購者
+      const notEnoughAmountCount = snapperStatus[4].length // 餘額不足的搶購者
 
       // 更新 DB 資料
       const result = await updateProductStock(productId, qualifiedSnapper)
       const qualifiedSnapperUpdate = result[0]
       const productInfo = result[1]
-      // [qualifiedSnapper, productInfo]
+      const getProductSnapperCount = result[2].length
+      const nonGetProductSnapperCount = result[3].length
 
       return res.render('snapup', {
+        originalStock,
         product,
         totalQueryAmount,
         productInfo,
         allSnapper,
         qualifiedSnapper,
         qualifiedSnapperUpdate,
-        hasDBProcessTimeKey
+        hasDBProcessTimeKey,
+        totalSnapperCount,
+        qualifiedSnapperCount,
+        notInLineSnapperCount,
+        notEnoughAmountCount,
+        getProductSnapperCount,
+        nonGetProductSnapperCount
       })
     }
 
@@ -129,6 +138,7 @@ const updateProduct = async (req, res) => {
       const emptyProduct = result.rows[0]
 
       return res.render('snapup', {
+        originalStock,
         emptyStock,
         restStock,
         emptyProduct

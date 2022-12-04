@@ -1455,28 +1455,43 @@ img {
 
 #table-wrapper {
   position: relative;
+  height: fit-content;
 }
 
 #table-scroll {
   height: 350px;
   overflow: auto;
-  margin-top: 20px;
+  margin-top: 3px;
   white-space: nowrap;
-  overflow-x: auto
+  overflow-x: auto;
+  table-layout: fixed;
 }
+
 
 
 table {
   text-align: center;
   position: relative;
   border-collapse: collapse;
+  table-layout: fixed;
+  width: 90px;
+
 }
+
+
 
 th {
   background: white;
   position: sticky;
   top: 0;
+  z-index: 1;
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+th,
+td {
+  padding: 8px 16px;
+  border: 3px solid #ccc;
 }
 
 
@@ -1491,7 +1506,26 @@ tr.blue th {
 }
 
 
+
 tr.green th {
   background-color: green;
   color: white;
+}
+
+
+.attend-snapper {
+  color: grey;
+}
+
+.qualified-snapper {
+  color: rgb(0, 128, 255)
+}
+
+.result-snapper {
+  color: green
+}
+
+
+.product-name {
+  padding-top: 12px;
 }

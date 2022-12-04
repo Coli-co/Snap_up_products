@@ -19,10 +19,8 @@ producerSQS.listQueues(params, function (err, data) {
   if (err) {
     console.log('Error', err)
   } else {
-    // console.log('Success', data)
     console.log('ListQueues is done.')
   }
-  // console.log('ListQueues is done.')
 })
 
 const requestTime = recordTime()
@@ -45,20 +43,11 @@ function sendRequest() {
     if (err) {
       console.log('Error', err)
     } else {
-      // console.log('Send request to SQS is successful.')
-      // console.log('Success', data.ResponseMetadata)
+      console.log('Send request to SQS is successful.')
     }
-    // console.log('SendMessage is done.')
+    console.log('SendMessage is done.')
   })
   return data
 }
-
-// async function test() {
-//   for (let i = 0; i < 3; i++) {
-//     await getLogData(sendRequest())
-//   }
-// }
-
-// test()
 
 module.exports = { sendRequest }

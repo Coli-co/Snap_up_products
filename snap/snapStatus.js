@@ -26,6 +26,10 @@ async function snapperStatusCheck(productId) {
   let totalQueryAmount = 0
   // 紀錄有資格的搶購者名單
   let qualifiedSnapper = []
+  // 紀錄餘額不足的搶購者名單
+  let notEnoughAmount = []
+  // 紀錄未入隊列的搶購者名單
+  let notInLine = []
 
   // 給予搶購者初步回應之後，再去確認搶購者資訊
   const getPreResponseSnapper = await getPreResponse()
@@ -35,6 +39,7 @@ async function snapperStatusCheck(productId) {
     if (snapper['snapnumber'] === '0') {
       snapper['snapStatus'] = '很抱歉 ! 您沒有被加入隊列中'
       snapper['dbProcessTime'] = '0:000' // 不具備資格，不用給 DB 處理
+      notInLine.push(snapper)
     } else if (
       // 有拿到號碼，餘額不足
       Number(snapper['snapnumber']) !== 0 &&
@@ -42,6 +47,7 @@ async function snapperStatusCheck(productId) {
     ) {
       snapper['snapStatus'] = '餘額不足、無法搶購 。'
       snapper['dbProcessTime'] = '0:000'
+      notEnoughAmount.push(snapper)
     } else {
       // 有拿到號碼，且餘額足夠
       snapper['snapStatus'] = '排隊中，請耐心等候...'
@@ -53,25 +59,28 @@ async function snapperStatusCheck(productId) {
   const qualifiedSnapperSort = qualifiedSnapper.sort((a, b) => {
     return Number(a['snapnumber']) - Number(b['snapnumber'])
   })
-  // console.log('qualifiedSnapperSort:', qualifiedSnapper)
-  // console.log('length:', qualifiedSnapper.length)
 
-  return [getPreResponseSnapper, qualifiedSnapperSort, totalQueryAmount]
+  return [
+    getPreResponseSnapper,
+    qualifiedSnapperSort,
+    totalQueryAmount,
+    notInLine,
+    notEnoughAmount
+  ]
 }
-
-// snapperStatusCheck(2)
 
 // 更新商品庫存
 async function updateProductStock(productId, qualifiedSnapper) {
   const pool = await new Pool(configParams)
   const snapProduct = await productDetail(productId)
-  // const qualifiedSnapper = await qualifiedSnapperSort(productId)
-  // const productId = snapProduct['id']
   let stock = snapProduct['quantity'] // 商品庫存
   const searchQuery = `SELECT * FROM products WHERE id = $1`
   const updateQuery = `
       UPDATE products SET quantity = $1 WHERE id = $2
       `
+  let getProduct = [] // 搶到商品的搶購名單
+  let nonGetProduct = [] //未搶到商品的搶購名單
+
   // 根據有資格的搶購者的搶購數量來更新搶購狀況
   try {
     qualifiedSnapper.forEach((snapper, index) => {
@@ -81,8 +90,10 @@ async function updateProductStock(productId, qualifiedSnapper) {
       if (reqQuantity <= stock) {
         stock -= reqQuantity
         snapper['snapStatus'] = '恭喜您搶到商品'
+        getProduct.push(snapper)
       } else if (reqQuantity > stock) {
         snapper['snapStatus'] = '商品庫存不足'
+        nonGetProduct.push(snapper)
       } else if (stock === 0) {
         snapper['snapStatus'] = '商品已搶購一空'
       }
@@ -106,7 +117,7 @@ async function updateProductStock(productId, qualifiedSnapper) {
     const productInfo = queryProduct.rows[0]
     const restStock = productInfo.quantity
     console.log('restStock is:', restStock)
-    return [qualifiedSnapper, productInfo]
+    return [qualifiedSnapper, productInfo, getProduct, nonGetProduct]
   } catch (err) {
     console.log(err)
   }
