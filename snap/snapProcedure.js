@@ -1,7 +1,7 @@
 const { Pool } = require('pg')
 const configParams = require('../config/pg')
-const insertClientData = require('../models/seeds/clientSeeder')
-const snapSequence = require('../sequences/orderId')
+const { insertClientData } = require('../models/seeds/clientSeeder')
+const { snapSequence } = require('../sequences/orderId')
 
 let snapBox = [] //搶購號碼
 let checkIdBox = [] //id檢查箱，用以檢查重複號碼
@@ -25,6 +25,7 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
         return snapBox
       }
     }
+    // console.log('snapBox: ', snapBox)
   } catch (err) {
     console.log('Run out of snap number!')
     console.log(err)
@@ -65,7 +66,7 @@ async function getSnapNumber(snapBox, randomId) {
       // 當 index 範圍超出時，代表已經遍歷完所有數字，終止程式執行
       if (a > randomId.length || b > randomId.length) {
         console.log('All client get snap number!')
-        return
+        continue
       }
 
       // 當 index 數值超出或等於 index 長度時，且其中一方的 index 等於 randomId 的最後 index 位置，就只須更新其 index 上 id 的 snapnumber 欄位
@@ -73,22 +74,22 @@ async function getSnapNumber(snapBox, randomId) {
         const text = `
             UPDATE clients  
               SET snapnumber = ${snapBox[b]}
-              WHERE id =  ${randomId[b]}
+              WHERE snapid =  ${randomId[b]}
             `
         await pool.query(text)
         console.log('All client get snap number!')
-        return
+        continue
       }
 
       if (b >= randomId.length && a === randomId.length - 1) {
         const text = `
             UPDATE clients  
               SET snapnumber = ${snapBox[a]}
-              WHERE id =  ${randomId[a]}
+              WHERE snapid =  ${randomId[a]}
             `
         await pool.query(text)
         console.log('All client get snap number!')
-        return
+        continue
       }
 
       if (i === 0) {
@@ -99,9 +100,9 @@ async function getSnapNumber(snapBox, randomId) {
                 ('1', ${randomId[0]}),
                 ('2', ${randomId[1]})  
               ) as c(ca, cb) 
-            WHERE c.cb = t.id;
+            WHERE c.cb = t.snapid;
             `
-        pool.query(text)
+        await pool.query(text)
       }
       const text = `
             UPDATE clients AS t 
@@ -110,7 +111,7 @@ async function getSnapNumber(snapBox, randomId) {
                 (${snapBox[b]}, ${randomId[b]}),
                 (${snapBox[a]}, ${randomId[a]})  
               ) as c(ca, cb) 
-            WHERE c.cb = t.id;
+            WHERE c.cb = t.snapid;
             `
       await pool.query(text)
     }
@@ -120,10 +121,10 @@ async function getSnapNumber(snapBox, randomId) {
 }
 
 // async function test() {
-//   await insertClientData(150)
-//   await snapSequence(60)
-//   const snapBox = await generateSnapNumber(60, 150)
-//   const randomIdGroup = await randomIdDistribute(150)
+//   await insertClientData(30)
+//   await snapSequence(10)
+//   const snapBox = await generateSnapNumber(10, 30)
+//   const randomIdGroup = await randomIdDistribute(30)
 //   await getSnapNumber(snapBox, randomIdGroup)
 // }
 

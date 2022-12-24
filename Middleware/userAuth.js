@@ -1,13 +1,14 @@
 // Check for duplicate usernames and emails
 const express = require('express')
-const db = require('../models/index')
-const jwt = require('jsonwebtoken')
-const user = require('../models/user')
-const { password } = require('../config/pg')
+// const db = require('../models/index')
+const { User } = require('../models/index')
+// const jwt = require('jsonwebtoken')
+// const user = require('../models/user')
+// const { password } = require('../config/pg')
 require('dotenv').config()
-const User = db.users
 
 const saveUser = async (req, res, next) => {
+  await User
   const errors = []
   const { userName, email, password, confirmPassword } = req.body
   try {

@@ -1,8 +1,14 @@
 const { Pool } = require('pg')
 const configParams = require('../config/pg')
 
-async function snapSequence(maxvalue) {
+async function dropSequence() {
   const drop = `DROP SEQUENCE IF EXISTS order_id;`
+  const pool = new Pool(configParams)
+  await pool.query(drop)
+  console.log('Order id sequence dropped.')
+}
+
+async function snapSequence(maxvalue) {
   const text = `
   CREATE SEQUENCE order_id
   INCREMENT 1
@@ -12,9 +18,9 @@ async function snapSequence(maxvalue) {
   `
 
   const pool = new Pool(configParams)
-  await pool.query(drop)
+
   await pool.query(text)
   console.log('Order id sequence created.')
 }
 
-module.exports = snapSequence
+module.exports = { dropSequence, snapSequence }

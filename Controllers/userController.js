@@ -1,11 +1,12 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models/index')
+// const db = require('../models/index')
+const { User } = require('../models/index')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 // user Schema
-const User = db.users
-
+// const User = db.users
+// console.log('User:',User)
 // sign a user up
 const signup = async (req, res) => {
   try {
@@ -41,8 +42,7 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ where: { email: email } })
 
-
-    if (user === null) {
+    if (!user) {
       errors.push({ message: '您尚未註冊 !' })
     }
 

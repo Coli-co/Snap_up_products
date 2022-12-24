@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING
     },
+    snapid: {
+      type: DataTypes.INTEGER
+    },
     snapnumber: {
       type: DataTypes.STRING
     },

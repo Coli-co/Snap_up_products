@@ -27,5 +27,6 @@ db.users = require('./user')(sequelize, DataTypes)
 db.clients = require('./client')(sequelize, DataTypes)
 
 const Client = db.clients
+const User = db.users
 
-module.exports = { db, Client }
+module.exports = { db, Client, User }

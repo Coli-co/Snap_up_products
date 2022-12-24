@@ -8,6 +8,7 @@ async function insertClientData(times) {
   try {
     for (let i = 0; i < times; i++) {
       const result = await Client.build({
+        snapid: `${i + 1}`,
         name: `${faker.name.findName()}`,
         quantity: Math.floor(Math.random() * 3) + 1,
         amount: Math.floor(Math.random() * 10000)
@@ -21,4 +22,4 @@ async function insertClientData(times) {
   pool.end()
 }
 
-module.exports = insertClientData
+module.exports = { insertClientData }

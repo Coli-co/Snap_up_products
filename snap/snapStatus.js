@@ -12,7 +12,7 @@ async function productDetail(productId) {
   return snapProduct
 }
 
-// 要檢查的snapper資訊 : snapnumber, quantity, amount
+// 要檢查的snapper資訊 : snapNumber, quantity, amount
 async function snapperStatusCheck(productId) {
   const pool = await new Pool(configParams)
   // 搶購商品資訊
@@ -21,7 +21,9 @@ async function snapperStatusCheck(productId) {
   // 實際搶購者名單資訊
   const text = `SELECT * FROM clients WHERE snapnumber IS NOT NULL`
   const result = await pool.query(text)
-  const allSnapper = result.rows // 所有搶購者 data
+  // console.log('result:', result.rows)
+  // console.log('original allSnapper:', result.rows)
+  // const allSnapper = result.rows // 所有搶購者 data
   // 總搶購數量
   let totalQueryAmount = 0
   // 紀錄有資格的搶購者名單
@@ -34,7 +36,7 @@ async function snapperStatusCheck(productId) {
   // 給予搶購者初步回應之後，再去確認搶購者資訊
   const getPreResponseSnapper = await getPreResponse()
 
-  getPreResponseSnapper.forEach((snapper, index) => {
+  getPreResponseSnapper.forEach((snapper) => {
     // 沒拿到搶購號碼
     if (snapper['snapnumber'] === '0') {
       snapper['snapStatus'] = '很抱歉 ! 您沒有被加入隊列中'
@@ -69,6 +71,7 @@ async function snapperStatusCheck(productId) {
   ]
 }
 
+// snapperStatusCheck(2)
 // 更新商品庫存
 async function updateProductStock(productId, qualifiedSnapper) {
   const pool = await new Pool(configParams)
