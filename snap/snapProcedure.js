@@ -3,11 +3,9 @@ const configParams = require('../config/pg')
 const { insertClientData } = require('../models/seeds/clientSeeder')
 const { snapSequence } = require('../sequences/orderId')
 
-let snapBox = [] //搶購號碼
-let checkIdBox = [] //id檢查箱，用以檢查重複號碼
-
 // fixedNumber : 固定搶購名額，actualNumber: 實際搶購名額
 async function generateSnapNumber(fixedNumber, actualNumber) {
+  const snapBox = [] //紀錄搶購號碼
   const pool = await new Pool(configParams)
   // 記錄搶購號碼
   try {
@@ -25,7 +23,6 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
         return snapBox
       }
     }
-    // console.log('snapBox: ', snapBox)
   } catch (err) {
     console.log('Run out of snap number!')
     console.log(err)
@@ -35,20 +32,26 @@ async function generateSnapNumber(fixedNumber, actualNumber) {
 
 // 隨機 id -> 產生隨機搶購者
 async function randomIdDistribute(times) {
-  for (let i = 0; i < times; i++) {
-    const randomId = Math.floor(Math.random() * times) + 1
-    await checkIdBox.push(randomId)
-  }
+  const checkIdBox = [] //id檢查箱，用以檢查重複號碼
 
-  const checkId = new Set()
-  // 替換重複 id
-  checkIdBox.forEach((id, index) => {
-    while (checkId.has(id)) {
-      checkIdBox[index] = id = Math.floor(Math.random() * times) + 1
+  try {
+    for (let i = 0; i < times; i++) {
+      const randomId = Math.floor(Math.random() * times) + 1
+      await checkIdBox.push(randomId)
     }
-    checkId.add(id)
-  })
-  return checkIdBox
+
+    const checkId = new Set()
+    // 替換重複 id
+    checkIdBox.forEach((id, index) => {
+      while (checkId.has(id)) {
+        checkIdBox[index] = id = Math.floor(Math.random() * times) + 1
+      }
+      checkId.add(id)
+    })
+    return checkIdBox
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // 分發搶購號碼給搶購者
@@ -66,7 +69,7 @@ async function getSnapNumber(snapBox, randomId) {
       // 當 index 範圍超出時，代表已經遍歷完所有數字，終止程式執行
       if (a > randomId.length || b > randomId.length) {
         console.log('All client get snap number!')
-        continue
+        return
       }
 
       // 當 index 數值超出或等於 index 長度時，且其中一方的 index 等於 randomId 的最後 index 位置，就只須更新其 index 上 id 的 snapnumber 欄位
@@ -78,7 +81,7 @@ async function getSnapNumber(snapBox, randomId) {
             `
         await pool.query(text)
         console.log('All client get snap number!')
-        continue
+        return
       }
 
       if (b >= randomId.length && a === randomId.length - 1) {
@@ -89,7 +92,7 @@ async function getSnapNumber(snapBox, randomId) {
             `
         await pool.query(text)
         console.log('All client get snap number!')
-        continue
+        return
       }
 
       if (i === 0) {

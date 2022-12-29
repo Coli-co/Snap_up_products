@@ -1,6 +1,5 @@
 .env
-/.vscode
-/node_modules
 
-errors.log
-out.log
+.vscode
+
+/node_modules

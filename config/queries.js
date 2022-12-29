@@ -1,9 +1,11 @@
 const { Pool } = require('pg')
 const configParams = require('./pg')
 const dropInUseClientTable = require('../models/drop/dropInUseClient')
-const insertClientData = require('../models/seeds/clientSeeder')
-const snapSequence = require('../sequences/orderId')
+const { insertClientData } = require('../models/seeds/clientSeeder')
+const { dropSequence, snapSequence } = require('../sequences/orderId')
+const { Client } = require('../models/index')
 
+// console.log('insertClientData:', insertClientData)
 const {
   emptyStock,
   hasDBProcessTimeKey
@@ -16,7 +18,7 @@ const {
 const {
   productDetail,
   snapperStatusCheck,
-  qualifiedSnapperSort,
+  // qualifiedSnapperSort,
   updateProductStock
 } = require('../snap/snapStatus')
 
@@ -69,30 +71,35 @@ const updateProduct = async (req, res) => {
   try {
     if (restStock > 0) {
       // 模擬不同商品搶購情境
-      if (productName === '全自動咖啡機') {
-        // 產生新的搶購者名單
-        await insertClientData(150)
-        //產生要分配給搶購者的序列號碼，
-        await snapSequence(60)
-        // 前者為預訂搶購名額，後者為實際搶購名額
-        const snapBox = await generateSnapNumber(60, 150)
-        // 產生隨機搶購者 (隨機 id)
-        const randomIdGroup = await randomIdDistribute(150)
-        // 分發搶購號碼給搶購者
-        await getSnapNumber(snapBox, randomIdGroup)
-      } else if (productName === '黃金脆皮雞腿排') {
-        await insertClientData(500)
-        await snapSequence(150)
-        const snapBox = await generateSnapNumber(150, 500)
-        const randomIdGroup = await randomIdDistribute(500)
-        await getSnapNumber(snapBox, randomIdGroup)
-      } else {
-        await insertClientData(100)
-        await snapSequence(30)
-        const snapBox = await generateSnapNumber(30, 100)
-        const randomIdGroup = await randomIdDistribute(100)
-        await getSnapNumber(snapBox, randomIdGroup)
-      }
+      // if (productName === '全自動咖啡機') {
+      // if (productName !== null) {
+      // 產生新的搶購者名單
+      await insertClientData(30)
+      //產生要分配給搶購者的序列號碼
+      await dropSequence()
+      await snapSequence(10)
+      // 前者為預訂搶購名額，後者為實際搶購名額
+      const snapBox = await generateSnapNumber(10, 30)
+      // 產生隨機搶購者 (隨機 id)
+      const randomIdGroup = await randomIdDistribute(30)
+      // 分發搶購號碼給搶購者
+      await getSnapNumber(snapBox, randomIdGroup)
+      // }
+      // else if (productName === '黃金脆皮雞腿排') {
+      //   await insertClientData(500)
+      //   await dropSequence()
+      //   await snapSequence(150)
+      //   const snapBox = await generateSnapNumber(150, 500)
+      //   const randomIdGroup = await randomIdDistribute(500)
+      //   await getSnapNumber(snapBox, randomIdGroup)
+      // } else {
+      //   await insertClientData(100)
+      //   await dropSequence()
+      //   await snapSequence(30)
+      //   const snapBox = await generateSnapNumber(30, 100)
+      //   const randomIdGroup = await randomIdDistribute(100)
+      //   await getSnapNumber(snapBox, randomIdGroup)
+      // }
 
       const product = await productDetail(productId)
 
@@ -100,6 +107,7 @@ const updateProduct = async (req, res) => {
       // 之後去檢查每位搶購者是否具備資格
       const snapperStatus = await snapperStatusCheck(productId)
       const allSnapper = snapperStatus[0] // 所有搶購者
+      // console.log('allSnapper:', allSnapper)
       const totalSnapperCount = allSnapper.length
       const qualifiedSnapper = snapperStatus[1] // 具備資格的搶購者
       const qualifiedSnapperCount = qualifiedSnapper.length
@@ -146,6 +154,12 @@ const updateProduct = async (req, res) => {
     }
   } catch (err) {
     console.log('err is:', err)
+  } finally {
+    await Client.destroy({ where: {}, truncate: true })
+    // await dropSequence()
+    // await dropInUseClientTable
+    console.log('Clients table data cleared.')
+    // await Client
   }
 }
 
