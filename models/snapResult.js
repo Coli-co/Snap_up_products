@@ -3,6 +3,9 @@
 
 module.exports = (sequelize, DataTypes) => {
   const snapResult = sequelize.define('snapresult', {
+    name: {
+      type: DataTypes.STRING
+    },
     requestDate: { type: 'TIMESTAMP' },
     getPreMessage: { type: DataTypes.STRING },
     getResponseTime: { type: DataTypes.STRING },

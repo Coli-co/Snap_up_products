@@ -1,25 +1,31 @@
 const productData = require('../../public/json/product.json').results
-const configParams = require('../../config/pg')
 const { Pool } = require('pg')
+const configParams = require('../../config/pg')
+const { Product } = require('../../models/index')
 
+async function insertProductData() {
+  const pool = await new Pool(configParams)
 
-async function insertData() {
-  const pool = new Pool(configParams)
-  productData.forEach((item) => {
-    const text = `INSERT INTO products (productname, description,featureone, featuretwo, featurethree, originprice, sellprice,img, quantity) VALUES ('${item.name}','${item.description}','${item.featureone}', '${item.featuretwo}', '${item.featurethree}', ${item.originprice},${item.sellprice},'${item.img}',${item.quantity})`
-
-    pool.query(text)
-  })
-  await pool.end()
-}
-
-async function confirmInsert() {
   try {
-    await insertData()
+    for (let i = 0; i < productData.length; i++) {
+      const result = await Product.create({
+        productname: productData[i].name,
+        description: productData[i].description,
+        featureone: productData[i].featureone,
+        featuretwo: productData[i].featuretwo,
+        featurethree: productData[i].featurethree,
+        originprice: productData[i].originprice,
+        sellprice: productData[i].sellprice,
+        img: productData[i].img,
+        quantity: productData[i].quantity
+      })
+      await result.save()
+    }
     console.log('All product data inserted successfully.')
   } catch (err) {
     console.log(err)
   }
+  await pool.end()
 }
 
-confirmInsert()
+insertProductData()

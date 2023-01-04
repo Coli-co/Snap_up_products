@@ -24,11 +24,13 @@ sequelize.sync() //synchorize all models
 
 // connecting to model
 db.users = require('./user')(sequelize, DataTypes)
+db.products = require('./product')(sequelize, DataTypes)
 db.clients = require('./client')(sequelize, DataTypes)
 db.snapResults = require('./snapResult')(sequelize, DataTypes)
 
-const Client = db.clients
 const User = db.users
+const Product = db.products
+const Client = db.clients
 const snapResult = db.snapResults
 
-module.exports = { db, Client, User, snapResult }
+module.exports = { db, Client, User, snapResult, Product }
