@@ -7,13 +7,8 @@ const configParams = {
   database: process.env.PGDB,
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
-  // maximum number of clients the pool should contain,default:10
   max: 20,
-  // number of milliseconds to wait before timing out when connecting a new client
-  // default : 0
   idleTimeoutMillis: 30000,
-  // number of milliseconds a client must sit idle in the pool and not be checked out before it is disconnected from the backend and discarded
-  // default is 10000 (10 seconds)
   connectionTimeoutMillis: 20000
 }
 
