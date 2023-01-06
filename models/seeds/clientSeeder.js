@@ -8,7 +8,7 @@ async function insertClientData(times) {
   try {
     for (let i = 0; i < times; i++) {
       const result = await Client.build({
-        name: `${faker.name.findName()}`,
+        name: `${faker.name.findName()}`.replace('.', '').replace("'", ''),
         quantity: Math.floor(Math.random() * 3) + 1,
         amount: Math.floor(Math.random() * 10000)
       })
