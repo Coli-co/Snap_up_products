@@ -58,6 +58,7 @@ const updateProduct = async (req, res) => {
   const query = `SELECT * FROM products WHERE id = $1`
   const results = await pool.query(query, [productId])
   const originalStock = results.rows[0].quantity
+
   // send multiple request to the queue
   sendRequestToQueue(productId, 10)
 
@@ -86,7 +87,7 @@ const updateProduct = async (req, res) => {
       hasDBProcessTimeKey,
       dbTimeFormatTrans
     })
-  }, 15000)
+  }, 18000)
 }
 
 module.exports = {

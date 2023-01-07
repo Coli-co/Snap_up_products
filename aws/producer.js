@@ -42,7 +42,6 @@ async function getClients() {
   try {
     const results = await pool.query(query)
     const data = results.rows
-    // console.log('data is:', data)
     return data
   } catch (err) {
     console.log(err)

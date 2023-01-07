@@ -15,7 +15,7 @@ async function productDetail(productId) {
 async function getSnappers() {
   try {
     const data = await snapResult.findAll({
-      order: [['requestDate', 'ASC']],
+      order: [['updatedAt', 'ASC']],
       raw: true
     })
     return data
