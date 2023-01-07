@@ -1494,36 +1494,14 @@ td {
   border: 3px solid #ccc;
 }
 
-
 tr.grey th {
   background-color: rgba(128, 87, 0, 0.729);
   color: white;
 }
 
-/* tr.blue th {
-  background-color: rgb(0, 128, 255);
-  color: white;
-}
-
-
-
-tr.green th {
-  background-color: green;
-  color: white;
-} */
-
-
 .attend-snapper {
   color: rgba(128, 87, 0, 0.729)
 }
-
-/* .qualified-snapper {
-  color: rgb(0, 128, 255)
-}
-
-.result-snapper {
-  color: green
-} */
 
 
 .product-name {

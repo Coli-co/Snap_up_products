@@ -1,10 +1,6 @@
 const handlebars = require('handlebars')
 const { diffTime } = require('../aws/recordTime')
 
-const emptyStock = handlebars.registerHelper('emptyStock', function (quantity) {
-  return Number(quantity) === 0
-})
-
 const hasDBProcessTimeKey = handlebars.registerHelper(
   'hasDBProcessTimeKey',
   function (object) {
@@ -48,7 +44,6 @@ const snapperSuccessCount = handlebars.registerHelper(
 )
 
 module.exports = {
-  emptyStock,
   hasDBProcessTimeKey,
   dbTimeFormatTrans,
   notEnoughAmountCount,

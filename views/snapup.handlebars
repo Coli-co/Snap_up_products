@@ -1,24 +1,3 @@
-{{!-- {{#if (emptyStock restStock)}}
-  <div class="row d-flex justify-content-center align-items-center">
-    <div class="col-4 text-center" style="width: 400px;">
-      <p class="product-name"><b>品名: {{emptyProduct.productname}}</b></p>  
-      <p><b>特賣價: {{emptyProduct.sellprice}}</b></p>
-      <p><b>原本庫存: {{originalStock}}</b></p>
-      <p><b>剩餘庫存: {{emptyProduct.quantity}}</b></p>
-    </div>
-    <div class="col-4" style="width: 400px;">
-      <img class="responsive" src="{{emptyProduct.img}}" width="100" height="100" alt="snapProductimage">
-    </div>
-    <div class="row text-center">
-      <h3 style="color: rgb(255, 123, 0);"><b>本商品已搶購一空 !<b></h3>
-    </div>
-  </div>
-
-  <p class="text-center"><b>...</b></p>
-
-
-
-  {{else}} --}}
 <h1 class="text-center mb-3"><b>搶購狀況<b></h1>
 <hr>
 <br>
@@ -27,7 +6,6 @@
   <div class="col-4 text-center" style="width: 400px;">
     <p class="product-name">品名: {{product.productname}}</p>
     <p>特賣價: {{product.sellprice}}</p>
-    {{!-- <p>總搶購數量: {{totalQueryAmount}}</p> --}}
     <p><b>原本庫存: {{originalStock}}</b></p>
     <p>剩餘庫存: {{restStock}}</p>
   </div>
@@ -88,81 +66,5 @@
 <br>
 <br>
 
-  {{!-- {{#if qualifiedSnapper}}
-  <h3 class="text-center mb-2 qualified-snapper" style="font-family:'Times New Roman', Times, serif;"> <b>有資格的搶購者</b></h3>
-  <div class="d-flex flex-row justify-content-end">
-    <div class="p-2">合計: {{qualifiedSnapperCount}}</div>
-  </div>
-  <div id="table-wrapper">
-    <div id="table-scroll">
-      <table class="table table-bordered border-primary align-middle table-hover">
-        <thead class="thead-dark">
-          <tr class="blue">
-            <th scope="col" style="width:10%;">id</th>
-            <th scope="col" style="width:10%;">Name</th>
-            <th scope="col" style="width:10%;">剩餘數量</th>
-            <th scope="col" style="width:10%;">帳戶餘額</th>
-            <th scope="col" style="width:10%;">搶購狀態</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each qualifiedSnapper}}
-          <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.name}}</td>
-            <td>{{this.restStock}}</td>
-            <td>{{this.amount}}</td>
-            <td>{{this.snapStatus}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {{/if}}
-
-  <br>
-  <br>
-
-  {{#if qualifiedSnapperUpdate}}
-  <h3 class="text-center mb-2 result-snapper" style="font-family:'Times New Roman', Times, serif;"> <b>最新搶購狀態</b> </h3>
-  <div class="d-flex flex-row justify-content-end">
-    <div class="d-flex justify-content-evenly">
-      <div class="p-2">搶到商品: {{getProductSnapperCount}}</div>
-      <div class="p-2">未搶到商品: {{nonGetProductSnapperCount}}</div>
-    </div>
-  </div>
-  <div id="table-wrapper mt-1">
-    <div id="table-scroll">
-      <table class="table table-bordered border-success align-middle table-hover">
-        <thead class="thead-dark">
-          <tr class="green">
-            <th scope="col" style="width:10%;">id</th>
-            <th scope="col" style="width:10%;">Name</th>
-            <th scope="col" style="width:10%;">剩餘數量</th>
-            <th scope="col" style="width:10%;">搶購數量</th>
-            <th scope="col" style="width:10%;">帳戶餘額</th>
-            <th scope="col" style="width:10%;">搶購狀態</th>
-            <th scope="col" style="width:10%;"> DB 處理時間 秒:毫秒</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each qualifiedSnapperUpdate}}
-          <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.name}}</td>
-            <td>{{this.restStock}}</td>
-            <td>{{this.quantity}}</td>
-            <td>{{this.amount}}</td>
-            <td>{{this.snapStatus}}</td>
-            <td>{{this.dbProcessTime}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {{/if}} --}}
-{{!-- {{/if}} --}}
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
     class="bi bi-arrow-up-short"></i></a>

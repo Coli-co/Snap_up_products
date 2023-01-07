@@ -24,6 +24,9 @@ const producerSQS = new AWS.SQS({ apiVersion: '2022/11/15' })
 const queueURL = process.env.FifoQueue
 
 const params = {}
+
+let clientNumber = 0
+
 // Calling the listQueues operation
 producerSQS.listQueues(params, function (err, data) {
   if (err) {
@@ -89,15 +92,11 @@ async function sendRequest(i, productId) {
     }
   )
   console.log(data.params.MessageBody)
-  // console.log(data.params)
-  // return data
 }
-async function multipleRequest(times, id) {
-  for (let i = 0; i < times; i++) {
-    await sendRequest(i, id)
-    // console.log(data.params.MessageBody)
-  }
-}
-// test()
 
-module.exports = { sendRequest, multipleRequest }
+function multipleRequest(id) {
+  sendRequest(clientNumber, id)
+  clientNumber += 1
+}
+
+module.exports = { multipleRequest }

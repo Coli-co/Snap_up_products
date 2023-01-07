@@ -4,7 +4,7 @@ const { Sequelize, DataTypes } = require('sequelize')
 // Set up database with Sequelize
 
 const sequelize = new Sequelize(
-  `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@localhost:${process.env.PGPORT}/${process.env.PGDB}`,
+  `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDB}`,
   { dialect: 'postgres', logging: false }
 )
 

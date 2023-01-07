@@ -1,12 +1,9 @@
 const bcrypt = require('bcryptjs')
-// const db = require('../models/index')
 const { User } = require('../models/index')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-// user Schema
-// const User = db.users
-// console.log('User:',User)
+
 // sign a user up
 const signup = async (req, res) => {
   try {
@@ -52,7 +49,7 @@ const login = async (req, res) => {
       if (password !== pass) {
         errors.push({ message: '密碼錯誤 !' })
       }
-      // if user and password both  match
+      // if user and password both match
       // generate token with user id and secretKey
       if (user && pass) {
         let token = jwt.sign({ id: user.id }, process.env.secretKey, {

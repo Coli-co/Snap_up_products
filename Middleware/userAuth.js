@@ -1,10 +1,5 @@
 // Check for duplicate usernames and emails
-const express = require('express')
-// const db = require('../models/index')
 const { User } = require('../models/index')
-// const jwt = require('jsonwebtoken')
-// const user = require('../models/user')
-// const { password } = require('../config/pg')
 require('dotenv').config()
 
 const saveUser = async (req, res, next) => {
@@ -20,7 +15,6 @@ const saveUser = async (req, res, next) => {
     })
     if (username) {
       errors.push({ message: '姓名已被使用過 !' })
-      // return res.render('register', { errors })
     }
 
     // check duplicate email
@@ -31,13 +25,10 @@ const saveUser = async (req, res, next) => {
     })
     if (hasEmail) {
       errors.push({ message: '信箱已被註冊 !' })
-      // req.flash('warning_msg', '信箱已被註冊 !')
-      // return res.render('register', { errors })
     }
 
     if (password !== confirmPassword) {
       errors.push({ message: '密碼不一致 !' })
-      // return res.render('register', { errors })
     }
 
     if (errors.length) {
