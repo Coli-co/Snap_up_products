@@ -48,9 +48,17 @@
           <td>{{this.getResponseTime}}</td> 
           <td>{{this.getPreMessage}}</td>   
           <td>{{this.quantity}}</td>
-          <td>{{this.restStock}}</td> 
-          <td>{{this.amount}}</td>
-          <td>{{this.snapStatus}}</td>
+          {{#if (valueIsNull this.restStock)}}
+            <td> - </td> 
+          {{else}}
+            <td>{{this.restStock}}</td>
+          {{/if}}
+            <td>{{this.amount}}</td>
+          {{#if (valueIsNull this.snapStatus)}}
+            <td> - </td>
+          {{else}}
+            <td>{{this.snapStatus}}</td>
+          {{/if}}
           {{#if (hasDBProcessTimeKey this)}}
             <td>{{dbTimeFormatTrans this.requestDate this.dbProcessDate}}</td>
           {{else}}

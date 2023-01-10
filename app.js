@@ -8,7 +8,6 @@ const methodOverride = require('method-override')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 const path = require('path')
-// const userDB = require('./models/index')
 
 const routes = require('./routes')
 const app = express()

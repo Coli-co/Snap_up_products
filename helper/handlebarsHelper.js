@@ -8,6 +8,10 @@ const hasDBProcessTimeKey = handlebars.registerHelper(
   }
 )
 
+const valueIsNull = handlebars.registerHelper('valueIsNull', function (value) {
+  return value === null
+})
+
 const dbTimeFormatTrans = handlebars.registerHelper(
   'dbTimeFormatTrans',
   function (requestDate, dbProcessDate) {
@@ -45,6 +49,7 @@ const snapperSuccessCount = handlebars.registerHelper(
 
 module.exports = {
   hasDBProcessTimeKey,
+  valueIsNull,
   dbTimeFormatTrans,
   notEnoughAmountCount,
   snapperSuccessCount

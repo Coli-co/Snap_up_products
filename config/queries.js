@@ -4,6 +4,7 @@ const { multipleRequest } = require('../aws/producer')
 
 const {
   hasDBProcessTimeKey,
+  valueIsNull,
   dbTimeFormatTrans,
   notEnoughAmountCount,
   snapperSuccessCount
@@ -85,9 +86,10 @@ const updateProduct = async (req, res) => {
       notEnoughAmountCount,
       snapperSuccessCount,
       hasDBProcessTimeKey,
+      valueIsNull,
       dbTimeFormatTrans
     })
-  }, 18000)
+  }, 20000)
 }
 
 module.exports = {

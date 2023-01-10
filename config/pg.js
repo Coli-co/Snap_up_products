@@ -7,9 +7,9 @@ const configParams = {
   database: process.env.PGDB,
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
-  max: 20,
+  max: 30,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 20000
+  connectionTimeoutMillis: 60000
 }
 
 // create pg connection
