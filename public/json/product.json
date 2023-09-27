@@ -9,7 +9,7 @@
       "featurethree": "一鍵式製作卡布奇諾單杯雙杯",
       "originprice": 10000,
       "sellprice": 6000,
-      "img": "https://hinetcdn.waca.ec/uploads/shops/5217/products/70/7091d122a737ed3216ecbf43e0621301.jpg",
+      "img": "https://colicontainer.s3.ap-northeast-1.amazonaws.com/firstFolder/coffee_machine.jpg",
       "quantity": 30
     },
     {
@@ -21,8 +21,8 @@
       "featurethree": "重磅保證，檢驗合格",
       "originprice": 4000,
       "sellprice": 2500,
-      "img": "https://i2.momoshop.com.tw/1658849912/goodsimg/0009/787/465/9787465_R2.webp",
-      "quantity": 100
+      "img": "https://colicontainer.s3.ap-northeast-1.amazonaws.com/firstFolder/chicken.webp",
+      "quantity": 50
     },
     {
       "id": 3,
@@ -33,7 +33,7 @@
       "featurethree": "十字準線，黑暗場景穩定模式，動態同步，自訂模式",
       "originprice": 13000,
       "sellprice": 9900,
-      "img": "https://www.lg.com/tw/images/monitors/MD05845989/gallery/34UC89G_Product_image_01_Desk.jpg",
+      "img": "https://colicontainer.s3.ap-northeast-1.amazonaws.com/firstFolder/esports_screen.jpg",
       "quantity": 20
     }
   ]
